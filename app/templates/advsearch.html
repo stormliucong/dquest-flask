@@ -1,41 +1,52 @@
 <!-- ====== Advanced Search Form ====== -->
-<button id="back_button" class="ui red button">Close Advanced Search</button>
-<p class="advs_header"> Fill in any or all of the fields below then click one of the <strong>Search</strong> buttons.</p>
-<p class="advs_header"> Read the <a href="/dquest/help" class="help_link" title="Show search help" target="_blank"><strong>Help</strong></a> or click on the label to the left of the search fields for further explanations.</p>
-<form class="ui form" id="adv_search" name="">
-    <h4 class="ui dividing header">Basic Search</h4>
-    <div class="field">
-        <label>Search Terms</label>
-        <input type="text" class="ui input_field field_text" name="term" id="search_text" value="" />
+<button id="back_button" class="ui red button"><i class="left chevron icon"></i>Close Advanced Search</button>
+
+<form class="ui form" id="adv_search" name="" style="margin-top:50px;">
+    <h2 class="ui dividing header">Basic Search</h2>
+    <div class="three fields">
+        <div class="field">
+            <label>Search Terms</label>
+            <input type="text" class="ui input_field field_text" name="term" id="search_text" value="" placeholder="Use this field to specify words or phrases related to the studies.">
+        </div>
+        <div class="field">
+            <label>StudyIds</label>
+            <input class="ui input_field field_text" type="text" name="id" id="StudyIds" placeholder="NCT00000419"/>
+        </div>
+        <div class="field">
+            <label>Conditions</label>
+            <input class="ui input_field field_text" type="text" name="cond" id="Conditions" placeholder="breast cancer">
+        </div>
     </div>
-    <div class="field">
-        <label>Recruitment</label>
-        <select class="ui fluid dropdown" name="recr" id="Recruitment">
-            <option value="" selected="selected">All Studies &nbsp;</option>
-            <option value="Open">Open Studies &nbsp;</option>
-            <option value="Recruiting">&nbsp; -- Recruiting &nbsp;</option>
-            <option value="Not yet recruiting">&nbsp; -- Not yet recruiting &nbsp;</option>
-            <option value="Available">&nbsp; -- Expanded Access: Available &nbsp;</option>
-            <option value="Closed">Closed Studies &nbsp;</option>
-            <option value="Active, not recruiting">&nbsp; -- Active, not recruiting &nbsp;</option>
-            <option value="Completed">&nbsp; -- Completed &nbsp;</option>
-            <option value="Enrolling by invitation">&nbsp; -- Enrolling by invitation &nbsp;</option>
-            <option value="Suspended">&nbsp; -- Suspended &nbsp;</option>
-            <option value="Terminated">&nbsp; -- Terminated &nbsp;</option>
-            <option value="Withdrawn">&nbsp; -- Withdrawn &nbsp;</option>
-            <option value="No longer available">&nbsp; -- Expanded Access: No longer available &nbsp;</option>
-            <option value="Temporarily not available">&nbsp; -- Expanded Access: Temporarily not available &nbsp;</option>
-        </select>
-    </div>
-    <div class="field">
+
+    <div class="three fields">
+        <div class="field">
+            <label>Recruitment</label>
+            <select class="ui fluid dropdown" name="recr" id="Recruitment">
+                <option value="" selected="selected">All Studies &nbsp;</option>
+                <option value="Open">Open Studies &nbsp;</option>
+                <option value="Recruiting">&nbsp; -- Recruiting &nbsp;</option>
+                <option value="Not yet recruiting">&nbsp; -- Not yet recruiting &nbsp;</option>
+                <option value="Available">&nbsp; -- Expanded Access: Available &nbsp;</option>
+                <option value="Closed">Closed Studies &nbsp;</option>
+                <option value="Active, not recruiting">&nbsp; -- Active, not recruiting &nbsp;</option>
+                <option value="Completed">&nbsp; -- Completed &nbsp;</option>
+                <option value="Enrolling by invitation">&nbsp; -- Enrolling by invitation &nbsp;</option>
+                <option value="Suspended">&nbsp; -- Suspended &nbsp;</option>
+                <option value="Terminated">&nbsp; -- Terminated &nbsp;</option>
+                <option value="Withdrawn">&nbsp; -- Withdrawn &nbsp;</option>
+                <option value="No longer available">&nbsp; -- Expanded Access: No longer available &nbsp;</option>
+                <option value="Temporarily not available">&nbsp; -- Expanded Access: Temporarily not available &nbsp;</option>
+            </select>
+        </div>
+        <div class="field">
         <label>Study Results</label>
         <select class="ui fluid dropdown" name="rslt" id="StudyResults">
             <option value="">All Studies &nbsp;</option>
             <option value="With">Studies With Results &nbsp;</option>
             <option value="Without">Studies Without Results &nbsp;</option>
         </select>
-    </div>
-    <div class="field">
+        </div>
+        <div class="field">
         <label>Study Type</label>
         <select class="ui fluid dropdown" name="type" id="StudyType">
             <option value="">All Studies &nbsp;</option>
@@ -44,50 +55,62 @@
             <option value="PReg">&nbsp; -- Patient Registries &nbsp;</option>
             <option value="Expn">Expanded Access Studies &nbsp;</option>
         </select>
-    </div>
-    <h4 class="ui dividing header">Targeted Search</h4>
-    <div class="field">
-        <label>Conditions</label>
-        <input class="ui input_field field_text" type="text" name="cond" id="Conditions" />
-    </div>
-    <div class="field">
-        <label>Interventions</label>
-        <input class="ui input_field field_text" type="text" name="intr" id="Interventions" />
-    </div>
-    <div class="field">
-        <label>Title Acronym/Titles</label>
-        <input class="ui input_field field_text" type="text" name="titles" id="Titles" />
-    </div>
-    <div class="field">
-        <label>Outcome Measures</label>
-        <input class="ui input_field field_text" type="text" name="outc" id="OutcomeMeasures" />
-    </div>
-    <div class="field">
-        <label>Sponsor/Collaborators</label>
-        <input class="ui input_field field_text" type="text" name="spons" id="Sponsors" />
-    </div>
-    <div class="field">
-        <div class="ui checkbox">
-            <input id="SponsorsExact" type="checkbox" name="spons_ex" name="spons_ex" id="SponsorsExact" value="Y">
-            <label>exact match</label>
         </div>
     </div>
-    <div class="field">
-        <label>Sponsor (Lead)</label>
-        <input class="ui input_field field_text" type="text" name="lead" id="LeadSponsors" />
-    </div>
-    <div class="field">
-        <div class="ui checkbox">
-            <input id="SponsorsExact" type="checkbox" name="lead_ex" id="LeadSponsorsExact" value="Y">
-            <label>exact match</label>
+
+
+
+
+    <h2 class="ui dividing header">Targeted Search</h2>
+
+    <div class="three fields">
+
+        <div class="field">
+            <label>Interventions</label>
+            <input class="ui input_field field_text" type="text" name="intr" id="Interventions" placeholder="clofibrate"/>
+        </div>
+        <div class="field">
+            <label>Title Acronym/Titles</label>
+            <input class="ui input_field field_text" type="text" name="titles" id="Titles" placeholder="WHI"/>
+        </div>
+        <div class="field">
+            <label>Outcome Measures</label>
+            <input class="ui input_field field_text" type="text" name="outc" id="OutcomeMeasures" placeholder="ejection fraction"/>
         </div>
     </div>
-    <div class="field">
-        <label>StudyIds</label>
-        <input class="ui input_field field_text" type="text" name="cond" id="LeadSponsors" />
-    </div>
-    <h4 class="ui dividing header">Locations:</h4>
+
     <div class="two fields">
+        <div class="field">
+            <label>Sponsor/Collaborators
+                <span>
+                    <div class="ui checkbox">
+                    <input id="SponsorsExact" type="checkbox" name="spons_ex" name="spons_ex"  value="Y">
+                    <label>exact match only</label>
+                    </div>
+                </span>
+
+            </label>
+            <input class="ui input_field field_text" type="text" name="spons" id="Sponsors" placeholder="Bristol-Myers Squibb"/>
+        </div>
+        <div class="field">
+            <label>Sponsor (Lead)
+            <span>
+                <div class="ui checkbox">
+                    <input type="checkbox" name="lead_ex" id="LeadSponsorsExact" value="Y">
+                    <label>exact match only</label>
+                </div>
+            </span>
+            </label>
+            <input class="ui input_field field_text" type="text" name="lead" id="LeadSponsors" placeholder="National Cancer Institute"/>
+        </div>
+    </div>
+
+    <h2 class="ui dividing header">Locations:</h2>
+    <div class="field">
+        <label>Location Terms</label>
+        <input class="input_field field_text" type="text" name="locn" id="LocationTerms" value="" placeholder="Los Angeles"/>
+    </div>
+    <div class="six fields">
         <div class="field">
             <label>State 1</label>
             <select class="ui fluid dropdown" name="state1" id="State1">
@@ -352,8 +375,7 @@
                 <option value="AF:ZW">Zimbabwe &nbsp;</option>
             </select>
         </div>
-    </div>
-    <div class="two fields">
+
         <div class="field">
             <label>State 2</label>
             <select class="ui fluid dropdown" name="state2" id="State2">
@@ -618,8 +640,7 @@
                 <option value="AF:ZW">Zimbabwe &nbsp;</option>
             </select>
         </div>
-    </div>
-    <div class="two fields">
+
         <div class="field">
             <label>State 3</label>
             <select class="ui fluid dropdown" name="state3" id="State3">
@@ -885,30 +906,29 @@
             </select>
         </div>
     </div>
-    <div class="field">
-        <label>Location Terms</label>
-        <input class="input_field field_text" type="text" name="locn" id="LocationTerms" value="" />
-    </div>
-    <h4 class="ui dividing header">Eligibility Criteria:</h4>
-    <div class="field">
-        <label>Age Group</label>
-        <div class=" three fields">
-            <div class="field">
-                <div class="ui checkbox">
-                    <input type="checkbox" name="age" id="IncludeChild" value="0">
-                    <label>Child (birth-17) </label>
+
+    <h2 class="ui dividing header">Eligibility Criteria:</h2>
+    <div class="two fields">
+        <div class="field">
+            <label>Age Group</label>
+            <div class=" three fields">
+                <div class="field">
+                    <div class="ui checkbox">
+                        <input type="checkbox" name="age" id="IncludeChild" value="0">
+                        <label>Child (birth-17) </label>
+                    </div>
                 </div>
-            </div>
-            <div class="field">
-                <div class="ui checkbox">
-                    <input type="checkbox" name="age" id="IncludeAdult" value="1">
-                    <label>Adult (18-65) </label>
+                <div class="field">
+                    <div class="ui checkbox">
+                        <input type="checkbox" name="age" id="IncludeAdult" value="1">
+                        <label>Adult (18-65) </label>
+                    </div>
                 </div>
-            </div>
-            <div class="field">
-                <div class="ui checkbox">
-                    <input type="checkbox" name="age" id="IncludeSenior" value="2">
-                    <label>Senior (66+) </label>
+                <div class="field">
+                    <div class="ui checkbox">
+                        <input type="checkbox" name="age" id="IncludeSenior" value="2">
+                        <label>Senior (66+) </label>
+                    </div>
                 </div>
             </div>
         </div>
@@ -921,7 +941,28 @@
             </select>
         </div>
     </div>
-    <h4 class="ui dividing header">Additional Criteria:</h4>
+
+    <h2 class="ui dividing header">Additional Criteria:</h2>
+    <div class="two fields">
+        <div class="field">
+            <label>Accepts Healthy Volunteers</label>
+            <div class="field">
+                <div class="ui checkbox">
+                        <input type="checkbox" name="hlth" id="AcceptsHealthy" value="Y">
+                        <label> Healthy volunteers may participate in the study.</label>
+                </div>
+            </div>
+        </div>
+        <div class="field">
+            <label>Safety Issue</label>
+            <div class="field">
+                <div class="ui checkbox">
+                        <input type="checkbox" name="safe" id="SafetyIssue" value="Y">
+                        <label>Has an outcome measure designated as a safety issue.</label>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="field">
         <label>Phase</label>
         <div class="six fields">
@@ -951,7 +992,7 @@
             </div>
             <div class="field">
                 <div class="ui checkbox">
-                    <input type="checkbox" name="phase" id="IncludePhase3" value="3">
+                    <input type="checkbox" name="phase" id="IncludePhase4" value="3">
                     <label>Phase 4</label>
                 </div>
             </div>
@@ -986,5 +1027,32 @@
             </div>
         </div>
     </div>
+    <div class="two fields">
+        <div class="field">
+            <label>First Received (MM/DD/YYYY)</label>
+            <div class="two fields">
+                <div class="field">
+                    <span class="date_text">from</span><input class="input_field field_text date" type="text" name="rcv_s" id="FirstReceivedStartDate"/>
+                </div>
+                <div class="field">
+                    <span class="date_text">to</span><input class="input_field field_text date" type="text" name="rcv_e" id="FirstReceivedEndDate"/>
+                </div>
+            </div>
+        </div>
+            <div class="field">
+            <label>Last Updated (MM/DD/YYYY)</label>
+            <div class="two fields">
+                <div class="field">
+                    <span class="date_text">from</span><input class="input_field field_text date" type="text" name="lup_s" id="LastUpdatedStartDate"/>
+                </div>
+                <div class="field">
+                    <span class="date_text">to</span><input class="input_field field_text date" type="text" name="lup_e" id="LastUpdatedEndDate"/>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <div class="ui secondary submit button" id="search_advs">Search</div>
+
 </form>

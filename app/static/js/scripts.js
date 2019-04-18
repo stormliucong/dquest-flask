@@ -432,6 +432,45 @@ function semantiUIInit() {
     //         term : 'empty'
     //     }
     // });
+    $('.ui.search')
+  .search({
+    minCharacters : 3,
+    showNoResults : false,
+    apiSettings   : {
+      onResponse: function(ctResponse) {
+        var
+          response = {
+            results : []
+          }
+        ;
+        // translate GitHub API response to work with search
+        $.each(ctResponse, function(index, item) {
+          var
+            maxResults = 8
+          ;
+          if(index >= maxResults) {
+            return false;
+          }
+          // create new language category
+
+          // add result to category
+          response.results.push({
+            title       : item
+
+          });
+        });
+        return response;
+      },
+      url: 'https://cors.io/?https://clinicaltrials.gov/ct2/rpc/extend/cond?cond={query}'
+    },
+    onSelect : function(result) {
+    $('#first_focus').val(result.title);
+    $('#search_button').focus();
+    }
+
+  })
+;
+
 }
 // document
 $(document).ready(function() {
@@ -459,6 +498,7 @@ $(document).ready(function() {
     $('#first_focus').keypress(
         function(e) {
             if (e.keyCode == 13) {
+                $('.results .transition .visible').hide();
                 input_term = $('#first_focus').val()
                 if (!input_term | input_term === '') {
                     alert('Please enter a term!');

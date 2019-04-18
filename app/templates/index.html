@@ -9,19 +9,23 @@
 <div class="ui hidden divider"></div>
 <div class="ui hidden divider"></div>
 <div class="ui hidden divider"></div>
-<div id='search_form_container' class='ui container'>
-    <form class="ui form" id="search_form" name="">
-        <div class="field">
-            <label>
-                <h3>Find a study by condition</h3>
-            </label>
-            <input type="text" class="ui input_field field_text" name="term" id="first_focus" value="" />
-        </div>
-        <div class="ui secondary submit button" id="search_button">Search</div>
-        <div class="ui secondary submit button" id="advsearch_button">Advanced Search</div>
-        <div class="ui error message"></div>
-    </form>
+<div class="ui stackable very relaxed center aligned grid container">
+    <h2 class="ui header">DQueST: Dynamic Questionnaire for Search of Clinical Trials.
+    </h2>
+    <div id='search_form_container' class='ui container'>
+        <form class="ui form" id="search_form" name="">
+            <div class="field">
+                <div class="ui search">
+                    <input class="prompt" name="term" id="first_focus" placeholder="Search CT.gov">
+                </div>
+            </div>
+            <div class="ui secondary submit button" id="search_button">Search</div>
+            <div class="ui button" id="advsearch_button">Advanced Search<i class="right chevron icon"></i></div>
+            <div class="ui error message"></div>
+        </form>
+    </div>
 </div>
+
 <div class="ui hidden divider"></div>
 <div id='adv_search_container' class='ui container' style="display:none">
     {% include "advsearch.html" %}
