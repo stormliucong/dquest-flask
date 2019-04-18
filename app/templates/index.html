@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block index %}
+<div id='ctgov_detail' class="ui container">
+    <h3>
+        <a href="http://www.clinicaltrials.gov" target="_blank">ClinicalTrials.gov</a> currently lists <span id="ctgov_number">{{nnct}}</span> studies
+    </h3>
+</div>
+<div class="ui hidden divider"></div>
+<div class="ui hidden divider"></div>
+<div class="ui hidden divider"></div>
+<div class="ui hidden divider"></div>
+<div id='search_form_container' class='ui container'>
+    <form class="ui form" id="search_form" name="">
+        <div class="field">
+            <label>
+                <h3>Find a study by condition</h3>
+            </label>
+            <input type="text" class="ui input_field field_text" name="term" id="first_focus" value="" />
+        </div>
+        <div class="ui secondary submit button" id="search_button">Search</div>
+        <div class="ui secondary submit button" id="advsearch_button">Advanced Search</div>
+        <div class="ui error message"></div>
+    </form>
+</div>
+<div class="ui hidden divider"></div>
+<div id='adv_search_container' class='ui container' style="display:none">
+    {% include "advsearch.html" %}
+</div>
+<div class="ui hidden divider"></div>
+<div id="question_container" class="ui container" style="display:none">
+    {% include "qform.html" %}
+</div>
+<div class="ui hidden divider"></div>
+<div id='results_container' class="ui container" style="display:none">
+    {% include "results.html" %}
+</div>
+{% endblock %}

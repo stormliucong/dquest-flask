@@ -1,0 +1,29 @@
+<div class="ui form">
+    <div class="ui two segments horizontal">
+        <div class="html ui top attached segment">
+            <div class="ui top attached label">question panel</div>
+            <div class="field">
+                <h3 class="ui header">
+                    <label id="question_number"></label>
+                </h3>
+                <h3 class="ui header">
+                    <label id="question_title"></label></h3>
+                <select class="ui fluid dropdown" id="include" name="include">
+                    <option value="INC">Yes</option>
+                    <option value="EXC">No</option>
+                    <option value="NULL" selected>I don't know/I don't want to answer</option>
+                </select>
+            </div>
+            <div class="ui green submit button" id="confirmbutton">Confirm</div>
+            <div id="close_question" class="ui red button">Exit Question</div>
+        </div>
+        <div class="html ui top attached segment">
+            <div class="ui top attached label">navigation panel</div>
+            <div class="ui container" id="go_back_container">
+                <div class="field">
+                    <div class="ui container" id="question_tags"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

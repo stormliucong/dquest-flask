@@ -1,0 +1,555 @@
+function search(tsearch) {
+    if (tsearch == 'advanced') {
+        var form_args = $(adv_search).serializeArray();
+        qlabel_value = $('#qlabel').text();
+        var qlabel = {
+            "name": "qlabel",
+            "value": qlabel_value
+        };
+        form_args.push(qlabel);
+        $.blockUI({
+            message: '<div class="ui segment"><div class="ui active dimmer">Loading...<div class="ui text loader"></div></div></div>',
+            css: {
+                border: 'none',
+                '-webkit-border-radius': '40px',
+                '-moz-border-radius': '40px',
+                opacity: .5,
+            },
+        });
+
+        $.getJSON($SCRIPT_ROOT + '/_advs_start_question',
+            form_args,
+            function(data) {
+                search_n = data.working_nct_id_list.length;
+                tag_name = 'advanced search';
+                $('#search_n').html(search_n);
+                $('#tag_name').html(tag_name);
+                nres = parseInt(search_n);
+                if (nres > 0) {
+                    if (nres > 1 && nres <= 25000) {
+                        $("#qfilt").show();
+                        $("#qfilt_warning").hide();
+                        $('#qfilt').unbind('click');
+                        $('#qfilt').bind('click', function() {
+                            start_question(tsearch);
+                            $('#search_form_container').hide();
+                            $('#question_container').show();
+                            $('#results_container').show();
+                            $('#search_results_container').hide();
+                            $('#filter_results_container').show();
+                            $("#qfilt").hide();
+                            $("#qfilt_warning").hide();
+                        });
+                    } else {
+                        if (nres > 25000) {
+                            $("#qfilt").hide();
+                            $("#qfilt_warning").show();
+                            $('#qfilt').unbind('click');
+
+                        }
+                    }
+                    find_search_results(data.working_nct_id_list, 1);
+                }
+            });
+    } else {
+        $.blockUI({
+            message: '<div class="ui segment"><div class="ui active dimmer">Loading...<div class="ui text loader"></div></div></div>',
+            css: {
+                border: 'none',
+                '-webkit-border-radius': '40px',
+                '-moz-border-radius': '40px',
+                opacity: .5,
+            },
+        });
+        $.getJSON($SCRIPT_ROOT + '/_start_question', {
+            stxt: $('#first_focus').val()
+        }, function(data) {
+            search_n = data.working_nct_id_list.length;
+            tag_name = $('#first_focus').val();
+            $('#search_n').html(search_n);
+            $('#tag_name').html(tag_name);
+            nres = parseInt(search_n);
+            if (nres > 0) {
+                if (nres > 1 && nres <= 25000) {
+                    $("#qfilt").show();
+                    $("#qfilt_warning").hide();
+                    $('#qfilt').unbind('click');
+                    $('#qfilt').bind('click', function() {
+                        start_question(tsearch);
+                        $('#search_form_container').hide();
+                        $('#question_container').show();
+                        $('#results_container').show();
+                        $('#search_results_container').hide();
+                        $('#filter_results_container').show();
+                        $("#qfilt").hide();
+                        $("#qfilt_warning").hide();
+
+                    });
+                } else {
+                    if (nres > 25000) {
+                        $("#qfilt").hide();
+                        $("#qfilt_warning").show();
+                        $('#qfilt').unbind('click');
+                    }
+                }
+                find_search_results(data.working_nct_id_list, 1);
+            }
+        });
+    }
+}
+
+// show the trial list
+function result_content(nct_details_for_this_page) {
+
+    var nct = nct_details_for_this_page;
+    var sout = new String();
+    for (var k in nct) { // rank
+        // sout += '<tr><td class="rank">' + nct[k][1] + '</td>';
+        // // title
+        // sout += '<td class="title"><a href="http://clinicaltrials.gov/ct2/show/' + nct[k][0] + '" target="_blank">' + nct[k][2] + '</a>';
+        // // sout += '<td class="title"><a href="http://haotianyong.appspot.com/cluster_gov?/ct2/show/' + nct[k][0] + '" target="_blank">' + nct[k][2] + '</a>';
+        // // condition
+        // sout += '<table class="ct_detail"><tr><td id="dtitle"> Condition: </td><td id="dvalue">' + nct[k][3] + '</td></tr></table></tr>';
+        sout += '<div class="item">';
+        sout += '<i class="ui large icon middle aligned">' + nct[k][1] + ' </i><div class="content">'
+        sout += '<a href="http://clinicaltrials.gov/ct2/show/' + nct[k][0] + '" target="_blank" class="header">' + nct[k][2] + '</a>';
+        // sout += '<div class="meta"><span>ctgov rank: <div class="">' +   + '</div></span></div>';
+        sout += '<div class="description"><p> Conditions: <code>' + nct[k][3] + '</code></p></div>';
+        sout += '</div></div>';
+    }
+    return sout
+}
+
+// start first question
+function start_question(tsearch) {
+    if (tsearch == 'advanced') {
+        var form_args = $(adv_search).serializeArray();
+        qlabel = $('#qlabel').text();
+        var qlabel = {
+            "name": "qlabel",
+            "value": qlabel
+        };
+        form_args.push(qlabel);
+        $
+        $.blockUI({
+            message: '<div class="ui segment"><div class="ui active dimmer">Loading...<div class="ui text loader"></div></div></div>',
+            css: {
+                border: 'none',
+                '-webkit-border-radius': '40px',
+                '-moz-border-radius': '40px',
+                opacity: .5,
+            },
+        });
+
+        $.getJSON($SCRIPT_ROOT + '/_advs_start_question',
+            form_args,
+            function(data) {
+                search_n = data.working_nct_id_list.length;
+                $('#filter_n').html(search_n);
+                nres = parseInt(search_n);
+                find_results(data.working_nct_id_list, 1);
+                q_visualization(data.question_answer_list, data.working_nct_id_list);
+
+            });
+    } else {
+        $.blockUI({
+            message: '<div class="ui segment"><div class="ui active dimmer">Loading...<div class="ui text loader"></div></div></div>',
+            css: {
+                border: 'none',
+                '-webkit-border-radius': '40px',
+                '-moz-border-radius': '40px',
+                opacity: .5,
+            },
+        });
+        $.getJSON($SCRIPT_ROOT + '/_start_question', {
+            stxt: $('#first_focus').val()
+        }, function(data) {
+            search_n = data.working_nct_id_list.length;
+            $('#filter_n').html(search_n);
+            nres = parseInt(search_n);
+            find_results(data.working_nct_id_list, 1);
+            q_visualization(data.question_answer_list, data.working_nct_id_list);
+
+
+        });
+    }
+}
+
+// visualize question_form
+function q_visualization(question_answer_list, working_nct_id_list) {
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // generate form TO BE IMPLEMENTED
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    $('#question_tags').empty();
+    qa = question_answer_list[question_answer_list.length - 1]
+    q = qa.question
+    sout = 'Answer Question [' + question_answer_list.length.toString() + '] '
+    $('#question_number').html(sout)
+    if (q.domain == 'condition') {
+        sout = 'Does the participant have the following condition -- ' + q.entity_text + '?'
+        $('#question_title').html(sout)
+    }
+    if (q.domain == 'END') {
+        sout = q.entity_text;
+        $('#question_title').html(sout)
+    }
+
+    // add tag.
+    for (var i = 1; i <= question_answer_list.length; i++) {
+        var sout = new String();
+        sout += '<div class="ui tag label button" id="qtag_' + i + '">';
+        sout += '[' + i + '] ' + question_answer_list[i-1].question.entity_text;
+        sout += '</div>'
+        $('#question_tags').append(sout);
+        $("#qtag_" + i).unbind('click');
+        $("#qtag_" + i).bind('click', {'idx': i,'q':question_answer_list,'w':working_nct_id_list}, function(e) {
+            var local_i = e.data.idx;
+            var q = e.data.q;
+            var w = e.data.w;
+            if (local_i > 1) {
+                q = q.slice(0, local_i - 1);
+            } else {
+                q = []
+            }
+            for (var j = 0; j < w.length; j++) {
+                if (w[j][2] >= local_i) {
+                    // change status.
+                    w[j][2] = 0
+                }
+            }
+            confirm(q, w);
+        });
+    }
+
+    // add confirm.
+    $('#confirmbutton').unbind('click');
+    $('#confirmbutton').bind('click', function() {
+        if ($("select[name='include']").val() != 'NULL') {
+            qa['answer'] = {};
+            a = qa['answer'];
+            a['include'] = $("select[name='include']").val();
+        }
+        confirm(question_answer_list, working_nct_id_list);
+    });
+}
+
+// event binding to confirm button
+function confirm(question_answer_list, working_nct_id_list) {
+    formData = {
+        'question_answer_list': question_answer_list,
+        'working_nct_id_list': working_nct_id_list
+    };
+    $.blockUI({
+        message: '<div class="ui segment"><div class="ui active dimmer">Loading...<div class="ui text loader"></div></div></div>',
+        css: {
+            border: 'none',
+            '-webkit-border-radius': '40px',
+            '-moz-border-radius': '40px',
+            opacity: .5,
+        },
+    });
+    $.ajax({
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        type: 'POST',
+        url: $SCRIPT_ROOT + '/_confirm',
+        data: JSON.stringify(formData),
+        dataType: "json",
+        success: function(data) {
+            console.log(data);
+            $('#confirmbutton').unbind('click');
+            q_visualization(data.question_answer_list, data.working_nct_id_list);
+            find_results(data.working_nct_id_list, 1);
+        },
+        error: function(XMLHttpRequest, textStatus, errorThrown) {
+            console.log(errorThrown);
+        }
+    });
+}
+
+function find_search_results(working_nct_id_list, np) {
+    formData = {
+        'working_nct_id_list': working_nct_id_list,
+        'npag': np
+    }
+    $.blockUI({
+        message: '<div class="ui segment"><div class="ui active dimmer">Loading...<div class="ui text loader"></div></div></div>',
+        css: {
+            border: 'none',
+            '-webkit-border-radius': '40px',
+            '-moz-border-radius': '40px',
+            opacity: .5,
+        },
+    });
+    $.ajax({
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        type: 'POST',
+        url: $SCRIPT_ROOT + '/_find_nct_by_page',
+        async: false,
+        data: JSON.stringify(formData),
+        dataType: "json",
+        success: function(data) { // format query
+            // sout = '<p class="recap"> Left <span class="drecap">' + data.size_of_active_trials + '</span> clinical trials for: <span id="qlabel" class="drecap">' + data.q + '<span></p>';
+            show_search_results(data.working_nct_id_list, data.npag, data.nct_details_for_this_page, data.size_of_active_trials);
+
+        },
+        error: function(XMLHttpRequest, textStatus, errorThrown) {
+            console.log(errorThrown);
+        }
+    });
+}
+
+function show_search_results(working_nct_id_list, npag, nct_details_for_this_page) {
+    size_of_active_trials = working_nct_id_list.length
+    // sout = '<table id="search_table">';
+    sout = result_content(nct_details_for_this_page);
+    // page navigation
+    // sout += '<tr><td colspan="3"><p id="nav_search">'
+    np = parseInt(npag);
+    sfirst = (np - 1) * 20 + 1;
+    slast = np * 20;
+    $('#sfirst').html(sfirst);
+    $('#slast').html(slast);
+    // previous
+    if (np > 1) {
+        $('#rprev').unbind('click');
+        $('#rprev').bind('click', function() {
+            find_search_results(working_nct_id_list, parseInt(npag) - 1);
+            $(document).scrollTop(0);
+        });
+    } else {
+        $('#rprev').unbind('click')
+    }
+    // next
+    pmax = Math.ceil(parseInt(size_of_active_trials) / 20);
+    if (np + 1 <= pmax) {
+        $('#rnext').unbind('click');
+        $('#rnext').bind('click', function() {
+            find_search_results(working_nct_id_list, parseInt(npag) + 1);
+
+            $(document).scrollTop(0);
+        });
+    } else {
+        $('#rnext').unbind('click')
+    }
+
+
+
+    $("#search_results").html(sout);
+
+
+}
+// find results (similar to search)
+// function to search
+function find_results(working_nct_id_list, np) {
+    formData = {
+        'working_nct_id_list': working_nct_id_list,
+        'npag': np
+    }
+    $.blockUI({
+        message: '<div class="ui segment"><div class="ui active dimmer">Loading...<div class="ui text loader"></div></div></div>',
+        css: {
+            border: 'none',
+            '-webkit-border-radius': '40px',
+            '-moz-border-radius': '40px',
+            opacity: .5,
+        },
+    });
+    $.ajax({
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        type: 'POST',
+        url: $SCRIPT_ROOT + '/_find_nct_by_page',
+        data: JSON.stringify(formData),
+        dataType: "json",
+        success: function(data) { // format query
+            // sout = '<p class="recap"> Left <span class="drecap">' + data.size_of_active_trials + '</span> clinical trials for: <span id="qlabel" class="drecap">' + data.q + '<span></p>';
+            // $('#filter_header_results').html(sout)
+            filter_n = data.size_of_active_trials
+            $("#filter_n").html(filter_n);
+            show_qfilter_results(data.working_nct_id_list, data.npag, data.nct_details_for_this_page, data.size_of_active_trials);
+        },
+        error: function(XMLHttpRequest, textStatus, errorThrown) {
+            console.log(errorThrown);
+        }
+    });
+}
+
+
+// function to output the search results
+function show_qfilter_results(working_nct_id_list, npag, nct_details_for_this_page, size_of_active_trials) {
+    sout = result_content(nct_details_for_this_page);
+    // sout += '<tr><td colspan="3"><p id="nav_search">'
+    np = parseInt(npag);
+    ffirst = (np - 1) * 20 + 1;
+    flast = np * 20;
+    $('#ffirst').html(ffirst);
+    $('#flast').html(flast);
+    // previous
+    if (np > 1) {
+        $('#fprev').unbind('click');
+        $('#fprev').bind('click', function() {
+            find_results(working_nct_id_list, parseInt(npag) - 1);
+            $(document).scrollTop(0);
+        });
+    } else {
+        $('#fprev').unbind('click')
+    }
+    // next
+    pmax = Math.ceil(parseInt(size_of_active_trials) / 20);
+    if (np + 1 <= pmax) {
+        $('#fnext').unbind('click');
+        $('#fnext').bind('click', function() {
+            find_results(working_nct_id_list, parseInt(npag) + 1);
+            $(document).scrollTop(0);
+        });
+    } else {
+        $('#fnext').unbind('click')
+    }
+
+
+
+    $("#filter_results").html(sout);
+}
+
+function semantiUIInit() {
+    $('.ui.dropdown').dropdown();
+    // $('.ui.form')
+    //     .form({
+    //         fields: {
+    //             term: 'empty'
+    //         }
+    //     });
+    // $('.ui.form').form({
+    //     fields : {
+    //         term : 'empty'
+    //     }
+    // });
+}
+// document
+$(document).ready(function() {
+    semantiUIInit();
+
+    // search
+    $('#search_button').bind('click',
+        function() {
+            input_term = $('#first_focus').val()
+            if (!input_term | input_term === '') {
+                alert('Please enter a term!');
+            } else {
+                search("regular");
+                $('#filter_results_container').hide();
+                $('#question_container').hide();
+                $('#results_container').show();
+                $('#search_form_container').show();
+                $('#search_results_container').show();
+                $(document).scrollTop(0);
+            }
+        });
+
+
+
+    $('#first_focus').keypress(
+        function(e) {
+            if (e.keyCode == 13) {
+                input_term = $('#first_focus').val()
+                if (!input_term | input_term === '') {
+                    alert('Please enter a term!');
+                } else {
+                    search("regular");
+                    $('#filter_results_container').hide();
+                    $('#question_container').hide();
+                    $('#results_container').show();
+                    $('#search_form_container').show();
+                    $('#search_results_container').show();
+                    $(document).scrollTop(0);
+                }
+                return false
+            }
+        });
+
+    // advanced search
+    $('#advsearch_button').click(function() {
+        var input = $('#search_text').val();
+        $('#search_form_container').hide();
+        $('#question_container').hide();
+        $('#results_container').hide();
+        $('#search_results_container').hide();
+        $('#filter_results_container').hide();
+        $('#adv_search_container').show();
+
+    });
+
+    $('#search_advs').click(function() {
+        search("advanced");
+        $('#adv_search_container').hide();
+        $('#search_form_container').show();
+        $('#question_container').hide();
+        $('#results_container').show();
+        $('#search_results_container').show();
+        $('#filter_results_container').hide();
+        $(document).scrollTop(0);
+    });
+
+    $('#search_text').keypress(
+        function(e) {
+            if (e.keyCode == 13) {
+                return false
+            }
+        });
+
+    // close advanced search form and return
+    $('#back_button').click(function() {
+        $('#adv_search_container').hide();
+        $('#question_container').hide();
+        $('#results_container').hide();
+        $('#search_results_container').hide();
+        $('#filter_results_container').hide();
+        $('#search_form_container').show();
+    });
+
+
+    // close question container
+    $('#close_question').bind('click',
+
+        function() {
+            $('#question_tags').empty();
+            $("#question_form").empty();
+            $('#question_number').empty();
+            $('#question_title').empty();
+            $("#answered_questions").empty();
+            $("#qa_title").prop("checked", false);
+            $("#qa_title_checkbox").hide();
+            $("#answered_questions_container").hide();
+
+
+
+            $('#question_container').hide();
+            $('#results_container').show();
+            $('#search_results_container').show();
+            $('#filter_results_container').hide();
+            $('#search_form_container').show();
+
+            $.blockUI({
+                message: '<div class="ui segment"><div class="ui active dimmer">Loading...<div class="ui text loader"></div></div></div>',
+                css: {
+                    border: 'none',
+                    '-webkit-border-radius': '40px',
+                    '-moz-border-radius': '40px',
+                    opacity: .5,
+                },
+            });
+            $.getJSON($SCRIPT_ROOT + '/_clean', function(data) {
+                $(document).scrollTop(0);
+            });
+        });
+
+});
+$(document).ajaxStop($.unblockUI);

@@ -1,0 +1,25 @@
+<div id="search_results_container" class='ui container' style='display: none'>
+    <h2 id="search_results_summary" class='ui dividing header'>
+        <div class="ui ignored warning message">Found <code id='search_n'></code> related trials for <a id='tag_name' class="ui teal tag label"></a></div>
+    </h2>
+    <div class="ui primary ignored button" id="qfilt" style='display: none'><i class="icon user"></i> Start Eligibility Criteria Question</div>
+    <div class="ui ignored warning message" id='qfilt_warning' style='display: none'>Eligibility Criteria Question NOT Available (resulting trials must be less than 25,000)</div>
+    
+    <div class="ui relaxed divided list" id='search_results'></div>
+    <div class="ui right menu secondary stackable container">
+        <a id="rprev" class="icon item"><i class="left chevron icon"></i> Previous Page </a>
+        <a id="rshow" class="item"> Showing <span id='sfirst'></span> - <span id='slast'></span> </a>
+        <a id="rnext" class="icon item"> Next Page <i class="right chevron icon"></i></a>
+    </div>
+</div>
+<div id="filter_results_container" class='ui container' style='display: none'>
+    <h2 id="filter_results_summary" class='ui dividing header'>
+        <div class="ui ignored warning message">Found <code id='filter_n'></code> eligible trials</div>
+    </h2>
+    <div class="ui relaxed divided list" id='filter_results'></div>
+    <div class="ui right menu secondary stackable container">
+        <a id="fprev" class="icon item"><i class="left chevron icon"></i> Previous Page </a>
+        <a id="fshow" class="item"> Showing <span id='sfirst'></span> - <span id='slast'></span> </a>
+        <a id="fnext" class="icon item"> Next Page <i class="right chevron icon"></i></a>
+    </div>
+</div>
