@@ -1,4 +1,4 @@
-app/lib/config.py
+#app/lib/config.py
 env/
 .idea/
 local/
