@@ -1,5 +1,7 @@
 from app import general_pool_criteria,general_pool_aact
 
+
+
 def init_working_nct_id_list(rnct):
     '''
     initialize working nct id list
@@ -12,7 +14,7 @@ def init_working_nct_id_list(rnct):
 
 # working_nct_id_list = [['NCT02901717', 3431, 0], ['NCT01287182', 3432, 0],['NCT01035944', 3432, 0],['NCT00562068', 3431, 1], ['NCT00742300', 3431, 2]]
 # question_answer_list = [{'answer': {}, 'question': {'domain': 'condition', 'entity_text': 'pregnant'}} ]
-def find_new_question(question_answer_list,working_nct_id_list):
+def find_new_question(question_answer_list,working_nct_id_list, domain='all'):
     '''
     find new question by frequency.
     alternatively, information entropy should be considered sum(plog(p))
@@ -26,9 +28,7 @@ def find_new_question(question_answer_list,working_nct_id_list):
     '''
     # working_nct_id_frame = pd.DataFrame(working_nct_id_list,columns=['nct_id', 'ctgov_rank', 'num_of_question'])
     working_nct_id_0 = [record[0] for record in working_nct_id_list if record[2] == 0]
-    active_question_0 = [qa['question']['entity_text'] for qa in question_answer_list]
-    conn = general_pool_criteria.connection()
-    cur = conn.cursor()
+
 
     placeholders1 = ",".join("?" * len(working_nct_id_0))
     ########################################################################################################################
@@ -39,46 +39,92 @@ def find_new_question(question_answer_list,working_nct_id_list):
     # Select the first 2000 is better.
     if len(working_nct_id_0) > 2000:
         placeholders1 = ",".join("?" * 2000)
-        # print(len(working_nct_id_0))
-        # random.shuffle(working_nct_id_0)
         working_nct_id_0 = working_nct_id_0[0:2000]
     ########################################################################################################################
-    placeholders2 = ",".join("?" * len(active_question_0))
-    params = []
-    params.extend(working_nct_id_0)
-    # print(working_nct_id_0)
-    if len(active_question_0) == 0:
-        sql = """
-                select top(1) count(distinct nctid) AS count, entity_text 
-                from dbo.ec_condition 
-                where nctid in (%s)  
-                group by entity_text 
-                order by count(distinct nctid) desc
-            """ % (placeholders1)
+    domain = domain.lower()
+    conn = general_pool_criteria.connection()
+    cur = conn.cursor()
+    if domain !='all':
+        table_name = 'dbo.ec_' + domain
+        placeholders2 = "?"
+        active_question_0 = [qa['question']['entity_text'] for qa in question_answer_list if qa['question']['domain'] == domain]
+        placeholders3 = ",".join("?" * len(active_question_0))
+        params = []
+        params.extend(working_nct_id_0)
+        params.extend([domain])
+
+        if len(active_question_0) == 0:
+
+            sql = """
+                    select top(1) count(distinct nctid) AS count, entity_text
+                    from %s
+                    where nctid in (%s) 
+                    and domain = %s
+                    group by entity_text 
+                    order by count(distinct nctid) desc
+                """ % (table_name, placeholders1,placeholders2)
+        else:
+            params.extend(active_question_0)
+            sql = """
+                    select top(1) count(distinct nctid) AS count, entity_text
+                    from %s
+                    where nctid in (%s)
+                    and domain = %s
+                    and entity_text not in (%s)
+                    group by entity_text 
+                    order by count(distinct nctid) desc
+                """ % (table_name, placeholders1, placeholders2, placeholders3)
+
+
+        cur.execute(sql, params)
+        next_concept = cur.fetchall()
+        conn.close()
+        cur.close()
+
+        if len(next_concept) > 0:
+            this_q = {'question': {'domain': domain, 'entity_text': next_concept[0][1]}}
+        else:
+            this_q = {'question': {'domain': domain, 'entity_text': 'NQF'}}
+        question_answer_list.append(this_q)
+
     else:
-        params.extend(active_question_0)
-        sql = """
-                select top(1) count(distinct nctid) AS count, entity_text 
-                from dbo.ec_condition 
-                where nctid in (%s)  
-                and entity_text not in (%s)
-                group by entity_text 
-                order by count(distinct nctid) desc
-            """ % (placeholders1, placeholders2)
-    # print(sql)
-    # print(params)
-    cur.execute(sql, params)
-    next_concept = cur.fetchall()
-    conn.close()
-    cur.close()
-    if len(next_concept) > 0:
-        this_q = {'question':{'domain':'condition','entity_text':next_concept[0][1]}}
-    else:
-        this_q = {'question':{'domain':'END','entity_text':'NO QUESTIONS FOUND FOR THE REMAININGS!!!'}}
-    question_answer_list.append(this_q)
+        active_question_0 = [qa['question']['entity_text'] for qa in question_answer_list]
+        placeholders2 = ",".join("?" * len(active_question_0))
+        params = []
+        params.extend(working_nct_id_0)
+
+        if len(active_question_0) == 0:
+            sql = """
+                    select top(1) count(distinct nctid) AS count, entity_text, domain
+                    from dbo.ec_condition 
+                    where nctid in (%s) 
+                    group by entity_text,domain 
+                    order by count(distinct nctid) desc
+                """ % (placeholders1)
+        else:
+            params.extend(active_question_0)
+            sql = """
+                    select top(1) count(distinct nctid) AS count, entity_text, domain
+                    from dbo.ec_condition 
+                    where nctid in (%s)  
+                    and entity_text not in (%s)
+                    group by entity_text,domain 
+                    order by count(distinct nctid) desc
+                """ % (placeholders1, placeholders2)
+
+        cur.execute(sql, params)
+        next_concept = cur.fetchall()
+        conn.close()
+        cur.close()
+
+        if len(next_concept) > 0:
+            this_q = {'question': {'domain': next_concept[0][2].lower(), 'entity_text': next_concept[0][1]}}
+        else:
+            this_q = {'question': {'domain': 'condition', 'entity_text': 'NQF'}}
+        question_answer_list.append(this_q)
+
     return question_answer_list
 
-# print(find_new_question([],working_nct_id_list))
 
 def find_nct_details(working_nct_id_list,npag):
     '''
@@ -87,8 +133,6 @@ def find_nct_details(working_nct_id_list,npag):
     :param npag: page number of result to return
     :return: nct_details_for_this_page is a list of list [[nct_id1, nct_title, nct_summary],[]]. similar to (n, nct) = ctgov.search (stxt, npag)
     '''
-    nct_details_for_this_page = []
-    # print(working_nct_id_list)
     working_nct_id_0 = [(record[0], record[1]) for record in working_nct_id_list if record[2] == 0]
     srt_working_nct_id_0 = sorted(working_nct_id_0, key=lambda x: x[1], reverse=False)
     start_idx = (npag - 1) * 20
@@ -99,8 +143,6 @@ def find_nct_details(working_nct_id_list,npag):
         nct_id_rank[srt[0]] = srt[1]
 
     # nct_id_this_page = ['NCT02901717','NCT01287182']
-    conn = general_pool_aact.connection()
-    cur = conn.cursor()
     sql = """
                    select c.nct_id,s.brief_title,c.name
                    from studies AS s
@@ -108,6 +150,8 @@ def find_nct_details(working_nct_id_list,npag):
                    on s.nct_id = c.nct_id
                    where s.nct_id in %s
                """
+    conn = general_pool_aact.connection()
+    cur = conn.cursor()
     cur.execute(sql, (tuple(nct_id_this_page),))
     details = cur.fetchall()
     conn.close()
@@ -152,34 +196,50 @@ def update_working_nct_id_list(question_answer_list,working_nct_id_list):
     question_answer_list = [{'answer': {}, 'question': (3, u'pregnant')}]
     '''
     question_number = len(question_answer_list)
+
     if question_number > 0:
         this_qa = question_answer_list[question_number-1]
         this_entity_text = this_qa['question']['entity_text']
+        this_domain = this_qa['question']['domain']
+        table_name = 'dbo.ec_' + this_domain
 
         if 'answer' not in this_qa.keys():
             return working_nct_id_list
 
-        this_include = this_qa['answer']['include']
+        this_answer = this_qa['answer']
+        this_include = this_answer['include']
+
+
+
+        rangestart = 0
+        rangeend = 0
+
+        if 'rangestart' in this_answer.keys():
+            rangestart = this_answer['rangestart']
+
+        if 'rangeend' in this_answer.keys():
+            rangeend = this_answer['rangeend']
+
+
+        sql =   """
+        select distinct nctid from %s
+        where entity_text in ('%s')
+        and 
+        (
+            (include in ('%s') and neg = 1) 
+            or 
+            (include not in ('%s') and neg = 0)
+        )
+        and (beforedays >= %s)
+        """ % (table_name,this_entity_text,this_include,this_include,rangestart)
+
+        print(sql)
 
         conn = general_pool_criteria.connection()
         cur = conn.cursor()
-        params = []
-        params.append(this_entity_text)
-        params.append(this_include)
-        params.append(this_include)
-
-        sql =   """
-                    select distinct nctid
-                    from dbo.ec_condition
-                    where entity_text in (%s)
-                    and ((include in (%s) and neg = 1) 
-                    or (include not in (%s) and neg = 0))
-                """ % ("?","?","?")
-
-        # print(sql)
-        # print(params)
-        cur.execute(sql, params)
-        filtered_nct_id = [nct_id[0] for nct_id in cur.fetchall()]
+        cur.execute(sql)
+        details = cur.fetchall()
+        filtered_nct_id = [nct_id[0] for nct_id in details]
         conn.close()
         cur.close()
         for nct_record in working_nct_id_list:

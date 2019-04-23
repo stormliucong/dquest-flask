@@ -9,11 +9,52 @@
                 <h3 class="ui header">
                     <label id="question_title"></label></h3>
                 <select class="ui fluid dropdown" id="include" name="include">
+                    <option value="NULL">I don't know/I don't want to answer</option>
                     <option value="INC">Yes</option>
                     <option value="EXC">No</option>
-                    <option value="NULL" selected>I don't know/I don't want to answer</option>
+                </select>
+
+                <div class="ui divider hidden"></div>
+                <div class="ui container" id="time_container" style="display:none;">
+                    <h3 class="ui header">
+                        <label>Could you provide the start and end time (Optional) </label></h3>
+                    <div class="two fields horizontal">
+
+                        <div class="field">
+                            <label>Start date</label>
+                            <div class="ui calendar" id="rangestart">
+                              <div class="ui input left icon">
+                                <i class="calendar icon"></i>
+                                <input type="text" placeholder="Start">
+                              </div>
+                            </div>
+                          </div>
+                       <div class="field">
+                            <label>End date</label>
+                            <div class="ui calendar" id="rangeend">
+                              <div class="ui input left icon">
+                                <i class="calendar icon"></i>
+                                <input type="text" placeholder="End">
+                              </div>
+                            </div>
+                          </div>
+                    </div>
+                </div>
+
+                <div class="ui divider hidden"></div>
+                <h3 class="ui header">
+                    <label id="domain_check">Which domain of the questions you wish to be asked next?</label>
+                </h3>
+                <select class="ui fluid dropdown" id="domain" name="domain">
+                    <option value="condition">Condition</option>
+                    <option value="measurement">Measurement</option>
+                    <option value="drug">Drug</option>
+                    <option value="observation">Observation</option>
+                    <option value="procedure">Procedure</option>
+                    <option value="all" selected>Any</option>
                 </select>
             </div>
+
             <div class="ui green submit button" id="confirmbutton">Confirm</div>
             <div id="close_question" class="ui red button">Exit Question</div>
         </div>

@@ -108,9 +108,11 @@ def find_nct_by_page():
 def confirm():
     requestion_dict = request.get_json()
     question_answer_list = requestion_dict['question_answer_list']
+    print(question_answer_list);
     working_nct_id_list = requestion_dict['working_nct_id_list']
+    domain = requestion_dict['domain']
     working_nct_id_list = qst.update_working_nct_id_list(question_answer_list,working_nct_id_list)
-    question_answer_list = qst.find_new_question(question_answer_list,working_nct_id_list)
+    question_answer_list = qst.find_new_question(question_answer_list,working_nct_id_list,domain)
     return jsonify(question_answer_list = question_answer_list, working_nct_id_list = working_nct_id_list)
 
 # close the session.

@@ -180,36 +180,59 @@ function q_visualization(question_answer_list, working_nct_id_list) {
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // generate form TO BE IMPLEMENTED
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     $('#question_tags').empty();
+    $("#include option[value='NULL']").attr("selected", "selected");
     qa = question_answer_list[question_answer_list.length - 1]
     q = qa.question
     sout = 'Answer Question [' + question_answer_list.length.toString() + '] '
     $('#question_number').html(sout)
-    if (q.domain == 'condition') {
-        sout = 'Does the participant have the following condition -- ' + q.entity_text + '?'
-        $('#question_title').html(sout)
-    }
-    if (q.domain == 'END') {
+    if (q.entity_text != 'QNF') {
+        if (q.domain.toLowerCase() == 'condition') {
+            sout = 'Does the participant have the following condition -- ' + q.entity_text + '?'
+            $('#question_title').html(sout)
+        }
+        if (q.domain.toLowerCase() == 'drug') {
+            sout = 'Have the participant taken the following medications -- ' + q.entity_text + '?'
+            $('#question_title').html(sout)
+        }
+        if (q.domain.toLowerCase() == 'procedure') {
+            sout = 'Have the participant gone through the following procedure -- ' + q.entity_text + '?'
+            $('#question_title').html(sout)
+        }
+        if (q.domain.toLowerCase() == 'measurement') {
+            sout = 'Does the participant have the following measurement -- ' + q.entity_text + '?'
+            $('#question_title').html(sout)
+        }
+        if (q.domain.toLowerCase() == 'observation') {
+            sout = 'Does the participant have the following observation -- ' + q.entity_text + '?'
+            $('#question_title').html(sout)
+        }
+    } else {
         sout = q.entity_text;
         $('#question_title').html(sout)
     }
+
+
 
     // add tag.
     for (var i = 1; i <= question_answer_list.length; i++) {
         var sout = new String();
         sout += '<div class="ui tag label button" id="qtag_' + i + '">';
-        sout += '[' + i + '] ' + question_answer_list[i-1].question.entity_text;
+        sout += '[' + i + '] ' + question_answer_list[i - 1].question.entity_text;
         sout += '</div>'
         $('#question_tags').append(sout);
         $("#qtag_" + i).unbind('click');
-        $("#qtag_" + i).bind('click', {'idx': i,'q':question_answer_list,'w':working_nct_id_list}, function(e) {
+        $("#qtag_" + i).bind('click', { 'idx': i, 'q': question_answer_list, 'w': working_nct_id_list }, function(e) {
             var local_i = e.data.idx;
             var q = e.data.q;
             var w = e.data.w;
             if (local_i > 1) {
+                d = q[local_i - 1].question.domain;
                 q = q.slice(0, local_i - 1);
             } else {
-                q = []
+                d = 'ALL';
+                q = [];
             }
             for (var j = 0; j < w.length; j++) {
                 if (w[j][2] >= local_i) {
@@ -217,27 +240,54 @@ function q_visualization(question_answer_list, working_nct_id_list) {
                     w[j][2] = 0
                 }
             }
-            confirm(q, w);
+            confirm(q, w, d);
         });
     }
 
     // add confirm.
     $('#confirmbutton').unbind('click');
     $('#confirmbutton').bind('click', function() {
-        if ($("select[name='include']").val() != 'NULL') {
+        if ($("#include").val() != 'NULL') {
             qa['answer'] = {};
             a = qa['answer'];
-            a['include'] = $("select[name='include']").val();
+            a['include'] = $("#include").val();
+            if ($('#include').val() == 'INC') {
+                var today = new Date();
+                var dd = today.getDate();
+                var mm = today.getMonth() + 1; //January is 0!
+                var yyyy = today.getFullYear();
+                if (dd < 10) {
+                    dd = '0' + dd
+                }
+                if (mm < 10) {
+                    mm = '0' + mm
+                }
+                var today_time = mm + '/' + dd + '/' + yyyy;
+                if ($("#rangestart").attr('time_string') !== '') {
+                    var rangestart = moment($("#rangestart").attr('time_string'), 'MM/DD/YYYY');
+                    a['rangestart'] = -rangestart.diff(today_time, 'days');
+                }
+
+                if ($("#rangeend").attr('time_string') !== '') {
+
+                    var rangeend = moment($("#rangeend").attr('time_string'), 'MM/DD/YYYY');
+                    a['rangeend'] = -rangeend.diff(today_time, 'days');
+                }
+            }
+
         }
-        confirm(question_answer_list, working_nct_id_list);
+        semantiUIInit();
+        domain = $('#domain').val();
+        confirm(question_answer_list, working_nct_id_list, domain);
     });
 }
 
 // event binding to confirm button
-function confirm(question_answer_list, working_nct_id_list) {
+function confirm(question_answer_list, working_nct_id_list, domain) {
     formData = {
         'question_answer_list': question_answer_list,
-        'working_nct_id_list': working_nct_id_list
+        'working_nct_id_list': working_nct_id_list,
+        'domain': domain
     };
     $.blockUI({
         message: '<div class="ui segment"><div class="ui active dimmer">Loading...<div class="ui text loader"></div></div></div>',
@@ -420,7 +470,56 @@ function show_qfilter_results(working_nct_id_list, npag, nct_details_for_this_pa
 }
 
 function semantiUIInit() {
-    $('.ui.dropdown').dropdown();
+    $('#rangeend').attr('readonly', false);
+    $('#rangestart').attr('readonly', false);
+    $('#rangeend').attr('time_string', '');
+    $('#rangestart').attr('time_string', '');
+    $('.ui.dropdown').dropdown('restore defaults');
+    $('#rangestart').calendar({
+        type: 'date',
+        endCalendar: $('#rangeend'),
+        onChange: function(date) {
+            if (date !== undefined) {
+                var year = date.getFullYear();
+                var month = date.getMonth() + 1;
+                var day = date.getDate();
+                if (month < 10) {
+                    month = '0' + month;
+                }
+                if (day < 10) {
+                    day = '0' + day;
+                }
+                time = month + '/' + day + '/' + year;
+                $(this).attr('time_string', time);
+                // everything combined
+                console.log(time);
+            }
+
+        }
+    });
+    $('#rangeend').calendar({
+        type: 'date',
+        startCalendar: $('#rangestart'),
+        onChange: function(date) {
+            if (date !== undefined) {
+                var year = date.getFullYear();
+                var month = date.getMonth() + 1;
+                var day = date.getDate();
+                if (month < 10) {
+                    month = '0' + month;
+                }
+                if (day < 10) {
+                    day = '0' + day;
+                }
+                time = month + '/' + day + '/' + year;
+                $(this).attr('time_string', time);
+                // everything combined
+                console.log(time);
+            }
+        }
+    });
+    $('.ui.calendar').calendar('clear');
+
     // $('.ui.form')
     //     .form({
     //         fields: {
@@ -433,48 +532,53 @@ function semantiUIInit() {
     //     }
     // });
     $('.ui.search')
-  .search({
-    minCharacters : 3,
-    showNoResults : false,
-    apiSettings   : {
-      onResponse: function(ctResponse) {
-        var
-          response = {
-            results : []
-          }
-        ;
-        // translate GitHub API response to work with search
-        $.each(ctResponse, function(index, item) {
-          var
-            maxResults = 8
-          ;
-          if(index >= maxResults) {
-            return false;
-          }
-          // create new language category
+        .search({
+            minCharacters: 3,
+            showNoResults: false,
+            apiSettings: {
+                onResponse: function(ctResponse) {
+                    var
+                        response = {
+                            results: []
+                        };
+                    // translate GitHub API response to work with search
+                    $.each(ctResponse, function(index, item) {
+                        var
+                            maxResults = 8;
+                        if (index >= maxResults) {
+                            return false;
+                        }
+                        // create new language category
 
-          // add result to category
-          response.results.push({
-            title       : item
+                        // add result to category
+                        response.results.push({
+                            title: item
 
-          });
+                        });
+                    });
+                    return response;
+                },
+                url: 'https://cors.io/?https://clinicaltrials.gov/ct2/rpc/extend/cond?cond={query}'
+            },
+            onSelect: function(result) {
+                $('#first_focus').val(result.title);
+                $('#search_button').focus();
+            }
+
         });
-        return response;
-      },
-      url: 'https://cors.io/?https://clinicaltrials.gov/ct2/rpc/extend/cond?cond={query}'
-    },
-    onSelect : function(result) {
-    $('#first_focus').val(result.title);
-    $('#search_button').focus();
-    }
-
-  })
-;
 
 }
 // document
 $(document).ready(function() {
     semantiUIInit();
+
+    $("#include").change(function() {
+        if ($('#include').val() == 'INC') {
+            $('#time_container').show();
+        } else {
+            $('#time_container').hide();
+        }
+    });
 
     // search
     $('#search_button').bind('click',
