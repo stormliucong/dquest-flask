@@ -4,10 +4,15 @@ dquest implementation using flask
 ### Install and deploy
 ###### Enviroment
 1. python2.7
-2. dependency
+2. create env and dependency
 ```buildoutcfg
+sudo pip install virtualenv 
+sudo virtualenv venv
+source venv/bin/activate 
 pip install -r requirements.txt
+
 ```
+
 ###### Bug to fix before deploy
 ```buildoutcfg
 Traceback (most recent call last):
@@ -26,7 +31,60 @@ ImportError: No module named ext.cache
 ```buildoutcfg
 from flask_cache import make_template_fragment_key
 ```
-###### change configuration
+###### Change configuration
 ```
-app/lib/config.py
+# vi app/lib/config.py
+CRITERIA_HOST = 'elixr.XXX'
+CRITERIA_DATABASE = 'trial_knowledge_base'
+CRITEIRA_USERNAME = 'XXX'
+CRITERIA_PASSWORD = 'XXX'
+CRITERIA_DRIVER = '{ODBC Driver 17 for SQL Server}'
+CRITERIA_PORT  = XXX
+
+AACT_HOST = 'aact-db.ctti-clinicaltrials.org'
+AACT_PORT = 5432
+AACT_DATABASE = 'aact'
+AACT_USERNAME = 'XXX'
+AACT_PASSWORD = 'XXX'
+
+CSRF_ENABLED = True
+SECRET_KEY = 'XXX'
+```
+make sure the correct version of ODBC version is available on server
+```buildoutcfg
+odbcinst -j
+``` 
+###### Deploy in Ubuntu with Apache2
+Install and Enable mod_wsgi
+```buildoutcfg
+sudo apt-get install libapache2-mod-wsgi python-dev
+sudo a2enmod wsgi
+cd /var/www 
+git clone https://github.com/stormliucong/dquest-flask.git
+```
+
+Add the following lines of code to the file to configure the virtual host. Be sure to change the ServerName to your domain or cloud server's IP address:
+```buildoutcfg
+# sudo vi  /etc/apache2/sites-available/dquest-flask.conf
+<VirtualHost *:80>
+		ServerName mywebsite.com
+		ServerAdmin admin@mywebsite.com
+		WSGIScriptAlias /dquest /var/www/dquest-flask/app.wsgi
+		<Directory /var/www/FlaskApp/FlaskApp/>
+			Order allow,deny
+			Allow from all
+		</Directory>
+		ErrorLog ${APACHE_LOG_DIR}/error.log
+		LogLevel warn
+		CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
+```
+Enable the virtual host and restart apache2
+```buildoutcfg
+sudo a2ensite dquest-flask
+sudo service apache2 restart 
+```
+browser the website
+```buildoutcfg
+http://mywebsite.com/dquest/dquest
 ```
