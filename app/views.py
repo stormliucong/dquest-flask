@@ -3,13 +3,13 @@ from flask import render_template, jsonify, request, session
 from lib.log import logger
 import lib.oformat as of
 import lib.ctgov as ctgov
-import lib.question as qst
+import lib.question_cluster as qst
 
 log = logger ('dquest-view')
 
 
 # home page
-@app.route('/dquest/')
+@app.route('/index')
 def index ():
     # get trial number
     nnct = ctgov.get_nct_number ('http://clinicaltrials.gov/search?term=&displayxml=True&count=0')
@@ -17,23 +17,6 @@ def index ():
     # form = SearchForm()
     return render_template('index.html', nnct = of.format_nct_number(nnct))
 
-
-# about page
-@app.route ('/dquest/about')
-def about ():
-    print 'ciao'
-    return render_template('about.html')
-
-
-# help page
-@app.route('/dquest/help')
-def help_page():
-    return render_template('/help/help.html')
-
-# search definitions page
-@app.route('/dquest/definitions')
-def definitions_page():
-    return render_template('/help/definitions.html')
 
 # search for clinical trials
 @app.route('/_ctgov_search')
@@ -51,7 +34,7 @@ def ctgov_search ():
 @app.route('/_adv_search')
 def ctgov_advanced_search():
     (n, nct) = ctgov.advanced_search(request.args)
-    term = request.args.get('term')
+    # term = request.args.get('term')
     npag = request.args.get('npag')
     fq = of.format_query2print (request.args)
     if npag == '1':
@@ -108,7 +91,7 @@ def find_nct_by_page():
 def confirm():
     requestion_dict = request.get_json()
     question_answer_list = requestion_dict['question_answer_list']
-    print(question_answer_list);
+    print(question_answer_list)
     working_nct_id_list = requestion_dict['working_nct_id_list']
     domain = requestion_dict['domain']
     working_nct_id_list = qst.update_working_nct_id_list(question_answer_list,working_nct_id_list)

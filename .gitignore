@@ -1,5 +1,8 @@
 app/lib/config.py
+app/log/
+app/resources/
 app/lib/*.pyc
 env/
 .idea/
 local/
+.vscode/

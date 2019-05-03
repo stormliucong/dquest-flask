@@ -276,9 +276,9 @@ function q_visualization(question_answer_list, working_nct_id_list) {
             }
 
         }
-        semantiUIInit();
         domain = $('#domain').val();
         confirm(question_answer_list, working_nct_id_list, domain);
+        semantiUIInit();
     });
 }
 
