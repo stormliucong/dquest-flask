@@ -210,31 +210,55 @@ def update_working_nct_id_list(question_answer_list,working_nct_id_list):
         this_answer = this_qa['answer']
         this_include = this_answer['include']
 
+        if this_domain.lower() != 'measurement':
+            rangestart = 0
+            if 'rangestart' in this_answer.keys():
+                rangestart = this_answer['rangestart']
 
+            # if 'rangeend' in this_answer.keys():
+            #     rangeend = this_answer['rangeend']
+            
+            if this_include == 'INC':
+                sql =   '''
+                        select distinct nctid from %s
+                        where concept_cluster_name in ('%s')
+                        and 
+                        (
+                            (flag = 0 and beforedays >= %s) 
+                            or 
+                            (flag = 1 and beforedays <= %s)
+                        )
+                        ''' % (table_name,this_entity_text,rangestart,rangestart)
+            else:
+                sql =   '''
+                        select distinct nctid from %s
+                        where concept_cluster_name in ('%s')
+                        and 
+                        (
+                            (flag = 1)
+                        )
+                        ''' % (table_name,this_entity_text)
+        else:
+            if 'measurement_value' in this_answer.keys() and this_include == 'INC':
+                measurement_value = this_answer['measurement_value']                      
+                sql =   '''
+                        select distinct nctid from %s
+                        where concept_cluster_name in ('%s')
+                        and 
+                        (
+                            (
+                                flag = 0 and (min <= %s and max >= %s)
+                            ) or 
+                            (
+                                flag = 1 and (min >= %s or max <= %s)
+                            )
+                        )
+                        ''' % (table_name,this_entity_text,measurement_value,measurement_value,measurement_value,measurement_value)
+            else:
+                sql = '''
+                    select top(0) nctid from %s
+                '''% (table_name)
 
-        rangestart = 0
-        # rangeend = 0
-
-        if 'rangestart' in this_answer.keys():
-            rangestart = this_answer['rangestart']
-
-        if 'rangeend' in this_answer.keys():
-            rangeend = this_answer['rangeend']
-
-
-        sql =   """
-        select distinct nctid from %s
-        where concept_cluster_name in ('%s')
-        and 
-        (
-            (include in ('%s') and neg = 1) 
-            or 
-            (include not in ('%s') and neg = 0)
-        )
-        and (beforedays >= %s)
-        """ % (table_name,this_entity_text,this_include,this_include,rangestart)
-
-        print(sql)
 
         conn = general_pool_criteria.connection()
         cur = conn.cursor()

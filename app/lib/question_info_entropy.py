@@ -30,7 +30,8 @@ def find_new_question(question_answer_list,working_nct_id_list, domain='all'):
     working_nct_id_0 = [record[0] for record in working_nct_id_list if record[2] == 0]
 
 
-    placeholders1 = ",".join("?" * len(working_nct_id_0))
+    working_nct_id_0_len = len(working_nct_id_0)
+    placeholders1 = ",".join("?" * working_nct_id_0_len)
     ########################################################################################################################
     # placeholders1 = ",".join("?" * 2000)
     # working_nct_id_0 = [record[0] for record in working_nct_id_list if record[2] == 0][0:2000]
@@ -55,25 +56,41 @@ def find_new_question(question_answer_list,working_nct_id_list, domain='all'):
 
         if len(active_question_0) == 0:
 
-            sql = """
-                    select top(1) count(distinct nctid) AS count, concept_cluster_name
-                    from %s
-                    where nctid in (%s) and concept_cluster_name is NOT NULL
-                    and domain = %s
-                    group by concept_cluster_name 
-                    order by count(distinct nctid) desc
-                """ % (table_name, placeholders1,placeholders2)
+            sql = '''
+                    SELECT TOP(1) sum(PlogP) AS IE, concept_cluster_name
+                    FROM(
+                        select concept_cluster_name, flag, count, -(count/%s)*LOG((count/%s)) AS PlogP
+                        FROM
+                            (
+                        select CAST(count(distinct nctid) AS [float]) AS count, concept_cluster_name, flag
+                            from %s
+                            where nctid in (%s) and concept_cluster_name is NOT NULL
+                            and domain = %s
+                            group by concept_cluster_name,flag 
+                        ) X
+                    ) X
+                    GROUP BY concept_cluster_name
+                    ORDER BY sum(X.PlogP) DESC
+                ''' % (working_nct_id_0_len,working_nct_id_0_len,table_name, placeholders1,placeholders2)
         else:
             params.extend(active_question_0)
-            sql = """
-                    select top(1) count(distinct nctid) AS count, concept_cluster_name
-                    from %s
-                    where nctid in (%s) and concept_cluster_name is NOT NULL
-                    and domain = %s
-                    and concept_cluster_name not in (%s)
-                    group by concept_cluster_name 
-                    order by count(distinct nctid) desc
-                """ % (table_name, placeholders1, placeholders2, placeholders3)
+            sql = '''
+                    SELECT TOP(1) sum(PlogP) AS IE, concept_cluster_name
+                    FROM(
+                        select concept_cluster_name, flag, count, -(count/%s)*LOG((count/%s)) AS PlogP
+                        FROM
+                            (
+                        select CAST(count(distinct nctid) AS [float]) AS count, concept_cluster_name, flag
+                            from %s
+                            where nctid in (%s) and concept_cluster_name is NOT NULL
+                            and domain = %s
+                            and concept_cluster_name not in (%s)
+                            group by concept_cluster_name,flag 
+                        ) X
+                    ) X
+                    GROUP BY concept_cluster_name
+                    ORDER BY sum(X.PlogP) DESC
+                ''' % (working_nct_id_0_len,working_nct_id_0_len,table_name, placeholders1, placeholders2, placeholders3)
 
 
         cur.execute(sql, params)
@@ -94,32 +111,46 @@ def find_new_question(question_answer_list,working_nct_id_list, domain='all'):
         params.extend(working_nct_id_0)
 
         if len(active_question_0) == 0:
-            sql = """
-                    select top(1) count(distinct nctid) AS count, concept_cluster_name, domain
-                    from dbo.dquest_omop_clean_condition
-                    where nctid in (%s) and concept_cluster_name is NOT NULL
-                    group by concept_cluster_name,domain 
-                    order by count(distinct nctid) desc
-                """ % (placeholders1)
-            print(sql)
-
+            sql = '''
+                    SELECT TOP(1) sum(PlogP) AS IE, concept_cluster_name
+                    FROM(
+                        select concept_cluster_name, flag, count, -(count/%s)*LOG((count/%s)) AS PlogP
+                        FROM
+                            (
+                        select CAST(count(distinct nctid) AS [float]) AS count, concept_cluster_name, flag
+                            from dbo.dquest_omop_clean_condition
+                            where nctid in (%s) and concept_cluster_name is NOT NULL
+                            group by concept_cluster_name,flag 
+                        ) X
+                    ) X
+                    GROUP BY concept_cluster_name
+                    ORDER BY sum(X.PlogP) DESC
+                ''' % (working_nct_id_0_len,working_nct_id_0_len, placeholders1)
         else:
             params.extend(active_question_0)
-            sql = """
-                    select top(1) count(distinct nctid) AS count, concept_cluster_name, domain
-                    from dbo.dquest_omop_clean_condition
-                    where nctid in (%s) and concept_cluster_name is NOT NULL
-                    and concept_cluster_name not in (%s) 
-                    group by concept_cluster_name,domain 
-                    order by count(distinct nctid) desc
-                """ % (placeholders1, placeholders2)
+            sql = '''
+                    SELECT TOP(1) sum(PlogP) AS IE, concept_cluster_name
+                    FROM(
+                        select concept_cluster_name, flag, count, -(count/%s)*LOG((count/%s)) AS PlogP
+                        FROM
+                            (
+                        select CAST(count(distinct nctid) AS [float]) AS count, concept_cluster_name, flag
+                            from dbo.dquest_omop_clean_condition
+                            where nctid in (%s) and concept_cluster_name is NOT NULL
+                            and concept_cluster_name not in (%s)
+                            group by concept_cluster_name,flag 
+                        ) X
+                    ) X
+                    GROUP BY concept_cluster_name
+                    ORDER BY sum(X.PlogP) DESC
+                ''' % (working_nct_id_0_len,working_nct_id_0_len, placeholders1,placeholders2)
         cur.execute(sql, params)
         next_concept = cur.fetchall()
         conn.close()
         cur.close()
 
         if len(next_concept) > 0:
-            this_q = {'question': {'domain': next_concept[0][2].lower(), 'entity_text': next_concept[0][1]}}
+            this_q = {'question': {'domain': 'condition', 'entity_text': next_concept[0][1]}}
         else:
             this_q = {'question': {'domain': 'condition', 'entity_text': 'NQF'}}
         question_answer_list.append(this_q)
@@ -144,13 +175,13 @@ def find_nct_details(working_nct_id_list,npag):
         nct_id_rank[srt[0]] = srt[1]
 
     # nct_id_this_page = ['NCT02901717','NCT01287182']
-    sql = """
-                   select c.nct_id,s.brief_title,c.name
-                   from studies AS s
-                   left join conditions AS c
-                   on s.nct_id = c.nct_id
-                   where s.nct_id in %s
-               """
+    sql = '''
+            select c.nct_id,s.brief_title,c.name
+            from studies AS s
+            left join conditions AS c
+            on s.nct_id = c.nct_id
+            where s.nct_id in %s
+        '''
     conn = general_pool_aact.connection()
     cur = conn.cursor()
     cur.execute(sql, (tuple(nct_id_this_page),))
@@ -210,31 +241,55 @@ def update_working_nct_id_list(question_answer_list,working_nct_id_list):
         this_answer = this_qa['answer']
         this_include = this_answer['include']
 
+        if this_domain.lower() != 'measurement':
+            rangestart = 0
+            if 'rangestart' in this_answer.keys():
+                rangestart = this_answer['rangestart']
 
+            # if 'rangeend' in this_answer.keys():
+            #     rangeend = this_answer['rangeend']
+            
+            if this_include == 'INC':
+                sql =   '''
+                        select distinct nctid from %s
+                        where concept_cluster_name in ('%s')
+                        and 
+                        (
+                            (flag = 0 and beforedays >= %s) 
+                            or 
+                            (flag = 1 and beforedays <= %s)
+                        )
+                        ''' % (table_name,this_entity_text,rangestart,rangestart)
+            else:
+                sql =   '''
+                        select distinct nctid from %s
+                        where concept_cluster_name in ('%s')
+                        and 
+                        (
+                            (flag = 1)
+                        )
+                        ''' % (table_name,this_entity_text)
+        else:
+            if 'measurement_value' in this_answer.keys() and this_include == 'INC':
+                measurement_value = this_answer['measurement_value']                      
+                sql =   '''
+                        select distinct nctid from %s
+                        where concept_cluster_name in ('%s')
+                        and 
+                        (
+                            (
+                                flag = 0 and (min <= %s and max >= %s)
+                            ) or 
+                            (
+                                flag = 1 and (min >= %s or max <= %s)
+                            )
+                        )
+                        ''' % (table_name,this_entity_text,measurement_value,measurement_value,measurement_value,measurement_value)
+            else:
+                sql = '''
+                    select top(0) nctid from %s
+                '''% (table_name)
 
-        rangestart = 0
-        # rangeend = 0
-
-        if 'rangestart' in this_answer.keys():
-            rangestart = this_answer['rangestart']
-
-        if 'rangeend' in this_answer.keys():
-            rangeend = this_answer['rangeend']
-
-
-        sql =   """
-        select distinct nctid from %s
-        where concept_cluster_name in ('%s')
-        and 
-        (
-            (include in ('%s') and neg = 1) 
-            or 
-            (include not in ('%s') and neg = 0)
-        )
-        and (beforedays >= %s)
-        """ % (table_name,this_entity_text,this_include,this_include,rangestart)
-
-        print(sql)
 
         conn = general_pool_criteria.connection()
         cur = conn.cursor()

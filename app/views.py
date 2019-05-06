@@ -3,7 +3,7 @@ from flask import render_template, jsonify, request, session
 from lib.log import logger
 import lib.oformat as of
 import lib.ctgov as ctgov
-import lib.question_cluster as qst
+import lib.question_info_entropy as qst
 
 log = logger ('dquest-view')
 

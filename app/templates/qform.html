@@ -15,6 +15,14 @@
                 </select>
 
                 <div class="ui divider hidden"></div>
+
+                <div class="ui container" id="value_input_container" style="display:none;">
+                    <div class="field">
+                        <h3 class="ui header">
+                            <label>Please enter the value: </label></h3>
+                        <input type="number" id="measurement_value">
+                    </div>    
+                </div>
                 <div class="ui container" id="time_container" style="display:none;">
                     <h3 class="ui header">
                         <label>Could you provide the start and end time (Optional) </label></h3>
@@ -23,21 +31,21 @@
                         <div class="field">
                             <label>Start date</label>
                             <div class="ui calendar" id="rangestart">
-                              <div class="ui input left icon">
-                                <i class="calendar icon"></i>
-                                <input type="text" placeholder="Start">
-                              </div>
+                                <div class="ui input left icon">
+                                    <i class="calendar icon"></i>
+                                    <input type="text" placeholder="Start">
+                                </div>
                             </div>
-                          </div>
-                       <div class="field">
+                        </div>
+                        <div class="field">
                             <label>End date</label>
                             <div class="ui calendar" id="rangeend">
-                              <div class="ui input left icon">
-                                <i class="calendar icon"></i>
-                                <input type="text" placeholder="End">
-                              </div>
+                                <div class="ui input left icon">
+                                    <i class="calendar icon"></i>
+                                    <input type="text" placeholder="End">
+                                </div>
                             </div>
-                          </div>
+                        </div>
                     </div>
                 </div>
 

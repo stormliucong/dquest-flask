@@ -189,23 +189,23 @@ function q_visualization(question_answer_list, working_nct_id_list) {
     $('#question_number').html(sout)
     if (q.entity_text != 'QNF') {
         if (q.domain.toLowerCase() == 'condition') {
-            sout = 'Does the participant have the following condition -- ' + q.entity_text + '?'
+            sout = '(Condition) Have you ever been diagnosed with -- ' + q.entity_text + '?'
             $('#question_title').html(sout)
         }
         if (q.domain.toLowerCase() == 'drug') {
-            sout = 'Have the participant taken the following medications -- ' + q.entity_text + '?'
+            sout = '(Drug) Have you ever taken or received -- ' + q.entity_text + '?'
             $('#question_title').html(sout)
         }
         if (q.domain.toLowerCase() == 'procedure') {
-            sout = 'Have the participant gone through the following procedure -- ' + q.entity_text + '?'
+            sout = '(Procedure) Have you ever undergone a(n) -- ' + q.entity_text + '?'
             $('#question_title').html(sout)
         }
         if (q.domain.toLowerCase() == 'measurement') {
-            sout = 'Does the participant have the following measurement -- ' + q.entity_text + '?'
+            sout = '(Measurement) Do you know your most recent -- ' + q.entity_text + '?'
             $('#question_title').html(sout)
         }
         if (q.domain.toLowerCase() == 'observation') {
-            sout = 'Does the participant have the following observation -- ' + q.entity_text + '?'
+            sout = '(Observation) Do you currently have or have you ever had/been -- ' + q.entity_text + '?'
             $('#question_title').html(sout)
         }
     } else {
@@ -252,26 +252,35 @@ function q_visualization(question_answer_list, working_nct_id_list) {
             a = qa['answer'];
             a['include'] = $("#include").val();
             if ($('#include').val() == 'INC') {
-                var today = new Date();
-                var dd = today.getDate();
-                var mm = today.getMonth() + 1; //January is 0!
-                var yyyy = today.getFullYear();
-                if (dd < 10) {
-                    dd = '0' + dd
-                }
-                if (mm < 10) {
-                    mm = '0' + mm
-                }
-                var today_time = mm + '/' + dd + '/' + yyyy;
-                if ($("#rangestart").attr('time_string') !== '') {
-                    var rangestart = moment($("#rangestart").attr('time_string'), 'MM/DD/YYYY');
-                    a['rangestart'] = -rangestart.diff(today_time, 'days');
-                }
+                var title = $('#question_title').text();
+                var patt = /^\(Measurement\).*/g;
+                var result = patt.test(title);
+                if(result == false){
+                    var today = new Date();
+                    var dd = today.getDate();
+                    var mm = today.getMonth() + 1; //January is 0!
+                    var yyyy = today.getFullYear();
+                    if (dd < 10) {
+                        dd = '0' + dd
+                    }
+                    if (mm < 10) {
+                        mm = '0' + mm
+                    }
+                    var today_time = mm + '/' + dd + '/' + yyyy;
+                    if ($("#rangestart").attr('time_string') !== '') {
+                        var rangestart = moment($("#rangestart").attr('time_string'), 'MM/DD/YYYY');
+                        a['rangestart'] = -rangestart.diff(today_time, 'days');
+                    }
 
-                if ($("#rangeend").attr('time_string') !== '') {
+                    if ($("#rangeend").attr('time_string') !== '') {
 
-                    var rangeend = moment($("#rangeend").attr('time_string'), 'MM/DD/YYYY');
-                    a['rangeend'] = -rangeend.diff(today_time, 'days');
+                        var rangeend = moment($("#rangeend").attr('time_string'), 'MM/DD/YYYY');
+                        a['rangeend'] = -rangeend.diff(today_time, 'days');
+                    }
+                }else{
+                    if ($("#measurement_value").val() != ''){
+                        a['measurement_value'] = $("#measurement_value").val();
+                    }
                 }
             }
 
@@ -519,7 +528,8 @@ function semantiUIInit() {
         }
     });
     $('.ui.calendar').calendar('clear');
-
+    $('#measurement_value').val('');
+    $('#value_input_container').hide();
     // $('.ui.form')
     //     .form({
     //         fields: {
@@ -573,10 +583,26 @@ $(document).ready(function() {
     semantiUIInit();
 
     $("#include").change(function() {
-        if ($('#include').val() == 'INC') {
-            $('#time_container').show();
-        } else {
+        var title = $('#question_title').text();
+        var patt = /^\(Measurement\).*/g;
+        var result = patt.test(title);
+        if(result == true){
+            // This is a measurement
             $('#time_container').hide();
+            if ($('#include').val() == 'INC') {
+                $('#value_input_container').show();
+                
+            } else {
+                $('#value_input_container').hide();
+            }
+        }else{
+            $('#value_input_container').hide();
+            if ($('#include').val() == 'INC') {
+                $('#time_container').show();
+                
+            } else {
+                $('#time_container').hide();
+            }
         }
     });
 
