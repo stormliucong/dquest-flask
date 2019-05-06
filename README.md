@@ -88,3 +88,12 @@ browser the website
 ```buildoutcfg
 http://mywebsite.com/dquest/dquest
 ```
+Change different algorithms for question ranking by selecting one of the following three.
+1. question_info_entropy using information entropy to rank questions.
+2. question using raw entity_text (without omop mapping) to rank questions.
+3. question_cluster using frequency to rank questions.
+```
+import lib.question_info_entropy as qst
+import lib.question as qst
+import lib.question_cluster as qst
+```
