@@ -709,6 +709,7 @@ $(document).ready(function() {
             $('#search_results_container').show();
             $('#filter_results_container').hide();
             $('#search_form_container').show();
+            semantiUIInit(); // refresh table.
 
             $.blockUI({
                 message: '<div class="ui segment"><div class="ui active dimmer">Loading...<div class="ui text loader"></div></div></div>',
