@@ -487,6 +487,7 @@ function semantiUIInit() {
     $('.ui.dropdown').dropdown('restore defaults');
     $('#rangestart').calendar({
         type: 'date',
+        today: true,
         endCalendar: $('#rangeend'),
         onChange: function(date) {
             if (date !== undefined) {
@@ -509,6 +510,7 @@ function semantiUIInit() {
     });
     $('#rangeend').calendar({
         type: 'date',
+        today: true,
         startCalendar: $('#rangestart'),
         onChange: function(date) {
             if (date !== undefined) {
