@@ -243,11 +243,12 @@ def update_working_nct_id_list(question_answer_list,working_nct_id_list):
 
         if this_domain.lower() != 'measurement':
             rangestart = 0
+            rangeend = 0
             if 'rangestart' in this_answer.keys():
                 rangestart = this_answer['rangestart']
 
-            # if 'rangeend' in this_answer.keys():
-            #     rangeend = this_answer['rangeend']
+            if 'rangeend' in this_answer.keys():
+                rangeend = this_answer['rangeend']
             
             if this_include == 'INC':
                 sql =   '''
@@ -255,11 +256,12 @@ def update_working_nct_id_list(question_answer_list,working_nct_id_list):
                         where concept_cluster_name in ('%s')
                         and 
                         (
-                            (flag = 0 and beforedays >= %s) 
+                            (flag = 0 and beforedays >= %s)
                             or 
-                            (flag = 1 and beforedays <= %s)
+                            (flag = 1 and beforedays < %s)
+
                         )
-                        ''' % (table_name,this_entity_text,rangestart,rangestart)
+                        ''' % (table_name,this_entity_text,rangeend,rangeend)
             else:
                 sql =   '''
                         select distinct nctid from %s
@@ -281,7 +283,7 @@ def update_working_nct_id_list(question_answer_list,working_nct_id_list):
                                 flag = 0 and (min <= %s and max >= %s)
                             ) or 
                             (
-                                flag = 1 and (min >= %s or max <= %s)
+                                flag = 1 and (min > %s or max < %s)
                             )
                         )
                         ''' % (table_name,this_entity_text,measurement_value,measurement_value,measurement_value,measurement_value)
@@ -290,7 +292,7 @@ def update_working_nct_id_list(question_answer_list,working_nct_id_list):
                     select top(0) nctid from %s
                 '''% (table_name)
 
-
+        print(sql)
         conn = general_pool_criteria.connection()
         cur = conn.cursor()
         cur.execute(sql)
