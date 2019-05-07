@@ -86,7 +86,7 @@ sudo service apache2 restart
 ```
 browser the website
 ```buildoutcfg
-http://mywebsite.com/dquest/dquest
+http://mywebsite.com/dquest-flask
 ```
 Change different algorithms for question ranking by selecting one of the following three.
 1. question_info_entropy using information entropy to rank questions.
