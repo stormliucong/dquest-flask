@@ -288,6 +288,7 @@ function q_visualization(question_answer_list, working_nct_id_list) {
         domain = $('#domain').val();
         confirm(question_answer_list, working_nct_id_list, domain);
         semantiUIInit();
+        $('#domain').dropdown('set selected', domain);
     });
 }
 
