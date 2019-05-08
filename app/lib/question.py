@@ -162,12 +162,12 @@ def find_nct_details(working_nct_id_list,npag):
     nct_id_title = {}
     for r in details:
         if r[0] not in nct_id_condition.keys():
-            nct_id_condition[r[0]] = r[2];
+            nct_id_condition[r[0]] = r[2]
         else:
-            nct_id_condition[r[0]] += ',' + r[2];
+            nct_id_condition[r[0]] += ',' + r[2]
 
         if r[0] not in nct_id_title.keys():
-            nct_id_title[r[0]] = r[1];
+            nct_id_title[r[0]] = r[1]
 
     nct_details_for_this_page = [[nct_id,nct_id_rank[nct_id],nct_id_title[nct_id],nct_id_condition[nct_id]] for nct_id in nct_id_condition.keys()]
     nct_details_for_this_page = sorted(nct_details_for_this_page, key=lambda x: x[1], reverse=False)

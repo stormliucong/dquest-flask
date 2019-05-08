@@ -688,9 +688,15 @@ $(document).ready(function() {
         $('#search_form_container').show();
     });
 
+    $("#close_question").click(function(){
+		$("#close_modal").modal('show');
+	});
+	$("#close_modal").modal({
+		closable: true
+	});
 
     // close question container
-    $('#close_question').bind('click',
+    $('#confirm_close_question').bind('click',
 
         function() {
             $('#question_tags').empty();
