@@ -19,7 +19,7 @@ function search(tsearch) {
 
         $.getJSON($SCRIPT_ROOT + '/_advs_start_question',
             form_args,
-            function(data) {
+            function (data) {
                 search_n = data.working_nct_id_list.length;
                 tag_name = 'advanced search';
                 $('#search_n').html(search_n);
@@ -30,13 +30,14 @@ function search(tsearch) {
                         $("#qfilt").show();
                         $("#qfilt_warning").hide();
                         $('#qfilt').unbind('click');
-                        $('#qfilt').bind('click', function() {
+                        $('#qfilt').bind('click', function () {
                             start_question(tsearch);
                             $('#search_form_container').hide();
                             $('#question_container').show();
                             $('#results_container').show();
                             $('#search_results_container').hide();
                             $('#filter_results_container').show();
+                            $('#filter_results').hide();
                             $("#qfilt").hide();
                             $("#qfilt_warning").hide();
                         });
@@ -64,14 +65,14 @@ function search(tsearch) {
         var cond = $('#first_focus').val();
         var recrs = $('#recruit_status').val();
         var locn = $('#location_terms').val();
-        if(recrs == 'All'){
+        if (recrs == 'All') {
             recrs = ''
         }
         $.getJSON($SCRIPT_ROOT + '/_start_question_detail', {
             cond: cond,
             recrs: recrs,
             locn: locn
-        }, function(data) {
+        }, function (data) {
             search_n = data.working_nct_id_list.length;
             tag_name = $('#first_focus').val();
             $('#search_n').html(search_n);
@@ -82,7 +83,7 @@ function search(tsearch) {
                     $("#qfilt").show();
                     $("#qfilt_warning").hide();
                     $('#qfilt').unbind('click');
-                    $('#qfilt').bind('click', function() {
+                    $('#qfilt').bind('click', function () {
                         start_question(tsearch);
                         $('#search_form_container').hide();
                         $('#question_container').show();
@@ -151,7 +152,7 @@ function start_question(tsearch) {
 
         $.getJSON($SCRIPT_ROOT + '/_advs_start_question',
             form_args,
-            function(data) {
+            function (data) {
                 search_n = data.working_nct_id_list.length;
                 $('#filter_n').html(search_n);
                 nres = parseInt(search_n);
@@ -172,14 +173,14 @@ function start_question(tsearch) {
         var cond = $('#first_focus').val();
         var recrs = $('#recruit_status').val();
         var locn = $('#location_terms').val();
-        if(recrs == 'All'){
+        if (recrs == 'All') {
             recrs = ''
         }
         $.getJSON($SCRIPT_ROOT + '/_start_question_detail', {
             cond: cond,
             recrs: recrs,
             locn: locn
-        },  function(data) {
+        }, function (data) {
             search_n = data.working_nct_id_list.length;
             $('#filter_n').html(search_n);
             nres = parseInt(search_n);
@@ -199,35 +200,35 @@ function q_visualization(question_answer_list, working_nct_id_list) {
     $("#include option[value='NULL']").attr("selected", "selected");
     qa = question_answer_list[question_answer_list.length - 1]
     q = qa.question
-    sout = 'Answer Question' ;
+    sout = 'Answer Question';
     sout += '<div class="ui horizontal label">';
     sout += question_answer_list.length.toString();
     sout += '</div>'
     $('#question_number').html(sout)
     if (q.entity_text != 'QNF') {
         if (q.domain.toLowerCase() == 'condition') {
-            sout = '<div class="ui pink horizontal label">Condition</div>'
-            sout += 'Have you ever been diagnosed with -- ' + q.entity_text + '?'
+            x = '<div class="ui pink horizontal label">C</div>'
+            sout = 'Have you ever been diagnosed with -- ' + q.entity_text +  '?'
             $('#question_title').html(sout)
         }
         if (q.domain.toLowerCase() == 'drug') {
-            sout = '<div class="ui purple horizontal label">Drug</div>'
-            sout += 'Have you ever taken or received -- ' + q.entity_text + '?'
+            x = '<div class="ui purple horizontal label">D</div>'
+            sout = 'Have you ever taken or received -- ' + q.entity_text +   '?'
             $('#question_title').html(sout)
         }
         if (q.domain.toLowerCase() == 'procedure') {
-            sout = '<div class="ui brown horizontal label">Procedure</div>'
-            sout += 'Have you ever undergone a(n) -- ' + q.entity_text + '?'
+            x = '<div class="ui brown horizontal label">P</div>'
+            sout = 'Have you ever undergone a(n) -- ' + q.entity_text +   '?'
             $('#question_title').html(sout)
         }
         if (q.domain.toLowerCase() == 'measurement') {
-            sout = '<div class="ui blue horizontal label">Measurement</div>'
-            sout += 'Do you know your most recent -- ' + q.entity_text + '?'
+            x = '<div class="ui blue horizontal label">M</div>'
+            sout = 'Do you know your most recent -- ' + q.entity_text + x +  '?'
             $('#question_title').html(sout)
         }
         if (q.domain.toLowerCase() == 'observation') {
-            sout = '<div class="ui olive horizontal label">Observation</div>'
-            sout += 'Do you currently have or have you ever had/been -- ' + q.entity_text + '?'
+            x = '<div class="ui olive horizontal label">O</div>'
+            sout = 'Do you currently have or have you ever had/been -- ' + q.entity_text + '?'
             $('#question_title').html(sout)
         }
     } else {
@@ -241,14 +242,30 @@ function q_visualization(question_answer_list, working_nct_id_list) {
     for (var i = 1; i <= question_answer_list.length; i++) {
         var sout = new String();
         sout += '<a class="item" id="qtag_' + i + '">'
-        sout += '<div class="ui horizontal label" >';
-        sout += i
+        domain = question_answer_list[i - 1].question.domain;
+        if (domain.toLowerCase() == 'condition') {
+            sout += '<div class="ui pink horizontal label">C</div>';
+        }
+        if (domain.toLowerCase() == 'drug') {
+            sout += '<div class="ui purple horizontal label">D</div>';
+        }
+        if (domain.toLowerCase() == 'procedure') {
+            sout += '<div class="ui brown horizontal label">P</div>';
+        }
+        if (domain.toLowerCase() == 'measurement') {
+            sout += '<div class="ui blue horizontal label">M</div>';
+
+        }
+        if (domain.toLowerCase() == 'observation') {
+            sout += '<div class="ui olive horizontal label">O</div>';
+        }
+
         sout += '</div>'
         sout += question_answer_list[i - 1].question.entity_text;
-        sout += '</a'>
-        $('#question_tags').append(sout);
+        sout += '</a' >
+            $('#question_tags').append(sout);
         $("#qtag_" + i).unbind('click');
-        $("#qtag_" + i).bind('click', { 'idx': i, 'q': question_answer_list, 'w': working_nct_id_list }, function(e) {
+        $("#qtag_" + i).bind('click', { 'idx': i, 'q': question_answer_list, 'w': working_nct_id_list }, function (e) {
             var local_i = e.data.idx;
             var q = e.data.q;
             var w = e.data.w;
@@ -271,14 +288,14 @@ function q_visualization(question_answer_list, working_nct_id_list) {
 
     // add confirm.
     $('#confirmbutton').unbind('click');
-    $('#confirmbutton').bind('click', function() {
+    $('#confirmbutton').bind('click', function () {
         if ($("#include").val() != 'NULL') {
             qa['answer'] = {};
             a = qa['answer'];
             a['include'] = $("#include").val();
             if ($('#include').val() == 'INC') {
                 var title = $('#question_title').children('div').text();
-                if(title != 'Measurement'){
+                if (title != 'Measurement') {
                     var today = new Date();
                     var dd = today.getDate();
                     var mm = today.getMonth() + 1; //January is 0!
@@ -300,8 +317,8 @@ function q_visualization(question_answer_list, working_nct_id_list) {
                         var rangeend = moment($("#rangeend").attr('time_string'), 'MM/DD/YYYY');
                         a['rangeend'] = -rangeend.diff(today_time, 'days');
                     }
-                }else{
-                    if ($("#measurement_value").val() != ''){
+                } else {
+                    if ($("#measurement_value").val() != '') {
                         a['measurement_value'] = $("#measurement_value").val();
                     }
                 }
@@ -340,13 +357,13 @@ function confirm(question_answer_list, working_nct_id_list, domain) {
         url: $SCRIPT_ROOT + '/_confirm',
         data: JSON.stringify(formData),
         dataType: "json",
-        success: function(data) {
+        success: function (data) {
             console.log(data);
             $('#confirmbutton').unbind('click');
             q_visualization(data.question_answer_list, data.working_nct_id_list);
             find_results(data.working_nct_id_list, 1);
         },
-        error: function(XMLHttpRequest, textStatus, errorThrown) {
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
             console.log(errorThrown);
         }
     });
@@ -376,12 +393,12 @@ function find_search_results(working_nct_id_list, np) {
         async: false,
         data: JSON.stringify(formData),
         dataType: "json",
-        success: function(data) { // format query
+        success: function (data) { // format query
             // sout = '<p class="recap"> Left <span class="drecap">' + data.size_of_active_trials + '</span> clinical trials for: <span id="qlabel" class="drecap">' + data.q + '<span></p>';
             show_search_results(data.working_nct_id_list, data.npag, data.nct_details_for_this_page, data.size_of_active_trials);
 
         },
-        error: function(XMLHttpRequest, textStatus, errorThrown) {
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
             console.log(errorThrown);
         }
     });
@@ -401,7 +418,7 @@ function show_search_results(working_nct_id_list, npag, nct_details_for_this_pag
     // previous
     if (np > 1) {
         $('#rprev').unbind('click');
-        $('#rprev').bind('click', function() {
+        $('#rprev').bind('click', function () {
             find_search_results(working_nct_id_list, parseInt(npag) - 1);
             $(document).scrollTop(0);
         });
@@ -412,7 +429,7 @@ function show_search_results(working_nct_id_list, npag, nct_details_for_this_pag
     pmax = Math.ceil(parseInt(size_of_active_trials) / 20);
     if (np + 1 <= pmax) {
         $('#rnext').unbind('click');
-        $('#rnext').bind('click', function() {
+        $('#rnext').bind('click', function () {
             find_search_results(working_nct_id_list, parseInt(npag) + 1);
 
             $(document).scrollTop(0);
@@ -423,7 +440,7 @@ function show_search_results(working_nct_id_list, npag, nct_details_for_this_pag
 
 
 
-    $("#search_results").html(sout);
+    $("#search_results").children('.list').html(sout);
 
 
 }
@@ -452,14 +469,14 @@ function find_results(working_nct_id_list, np) {
         url: $SCRIPT_ROOT + '/_find_nct_by_page',
         data: JSON.stringify(formData),
         dataType: "json",
-        success: function(data) { // format query
+        success: function (data) { // format query
             // sout = '<p class="recap"> Left <span class="drecap">' + data.size_of_active_trials + '</span> clinical trials for: <span id="qlabel" class="drecap">' + data.q + '<span></p>';
             // $('#filter_header_results').html(sout)
             filter_n = data.size_of_active_trials
             $("#filter_n").html(filter_n);
             show_qfilter_results(data.working_nct_id_list, data.npag, data.nct_details_for_this_page, data.size_of_active_trials);
         },
-        error: function(XMLHttpRequest, textStatus, errorThrown) {
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
             console.log(errorThrown);
         }
     });
@@ -478,7 +495,7 @@ function show_qfilter_results(working_nct_id_list, npag, nct_details_for_this_pa
     // previous
     if (np > 1) {
         $('#fprev').unbind('click');
-        $('#fprev').bind('click', function() {
+        $('#fprev').bind('click', function () {
             find_results(working_nct_id_list, parseInt(npag) - 1);
             $(document).scrollTop(0);
         });
@@ -489,7 +506,7 @@ function show_qfilter_results(working_nct_id_list, npag, nct_details_for_this_pa
     pmax = Math.ceil(parseInt(size_of_active_trials) / 20);
     if (np + 1 <= pmax) {
         $('#fnext').unbind('click');
-        $('#fnext').bind('click', function() {
+        $('#fnext').bind('click', function () {
             find_results(working_nct_id_list, parseInt(npag) + 1);
             $(document).scrollTop(0);
         });
@@ -499,7 +516,7 @@ function show_qfilter_results(working_nct_id_list, npag, nct_details_for_this_pa
 
 
 
-    $("#filter_results").html(sout);
+    $("#filter_results").children('.list').html(sout);
 }
 
 function semantiUIInit() {
@@ -512,7 +529,7 @@ function semantiUIInit() {
         type: 'date',
         today: true,
         endCalendar: $('#rangeend'),
-        onChange: function(date) {
+        onChange: function (date) {
             if (date !== undefined) {
                 var year = date.getFullYear();
                 var month = date.getMonth() + 1;
@@ -535,7 +552,7 @@ function semantiUIInit() {
         type: 'date',
         today: true,
         startCalendar: $('#rangestart'),
-        onChange: function(date) {
+        onChange: function (date) {
             if (date !== undefined) {
                 var year = date.getFullYear();
                 var month = date.getMonth() + 1;
@@ -572,13 +589,13 @@ function semantiUIInit() {
             minCharacters: 3,
             showNoResults: false,
             apiSettings: {
-                onResponse: function(ctResponse) {
+                onResponse: function (ctResponse) {
                     var
                         response = {
                             results: []
                         };
                     // translate GitHub API response to work with search
-                    $.each(ctResponse, function(index, item) {
+                    $.each(ctResponse, function (index, item) {
                         var
                             maxResults = 8;
                         if (index >= maxResults) {
@@ -596,7 +613,7 @@ function semantiUIInit() {
                 },
                 url: 'https://cors.io/?https://clinicaltrials.gov/ct2/rpc/extend/cond?cond={query}'
             },
-            onSelect: function(result) {
+            onSelect: function (result) {
                 $('#first_focus').val(result.title);
                 $('#search_button').focus();
             }
@@ -605,25 +622,25 @@ function semantiUIInit() {
 
 }
 // document
-$(document).ready(function() {
+$(document).ready(function () {
     semantiUIInit();
 
-    $("#include").change(function() {
+    $("#include").change(function () {
         var title = $('#question_title').children('div').text()
-        if(title == 'Measurement'){
+        if (title == 'Measurement') {
             // This is a measurement
             $('#time_container').hide();
             if ($('#include').val() == 'INC') {
                 $('#value_input_container').show();
-                
+
             } else {
                 $('#value_input_container').hide();
             }
-        }else{
+        } else {
             $('#value_input_container').hide();
             if ($('#include').val() == 'INC') {
                 $('#time_container').show();
-                
+
             } else {
                 $('#time_container').hide();
             }
@@ -632,7 +649,7 @@ $(document).ready(function() {
 
     // search
     $('#search_button').bind('click',
-        function() {
+        function () {
             input_term = $('#first_focus').val()
             if (!input_term | input_term === '') {
                 alert('Please enter a term!');
@@ -641,7 +658,8 @@ $(document).ready(function() {
                 $('#filter_results_container').hide();
                 $('#question_container').hide();
                 $('#results_container').show();
-                $('#search_form_container').show();
+                $('#search_form_container').hide();
+                $('#dash_board').hide();
                 $('#search_results_container').show();
                 $(document).scrollTop(0);
             }
@@ -650,7 +668,7 @@ $(document).ready(function() {
 
 
     $('#first_focus').keypress(
-        function(e) {
+        function (e) {
             if (e.keyCode == 13) {
                 $('.results .transition .visible').hide();
                 input_term = $('#first_focus').val()
@@ -661,7 +679,8 @@ $(document).ready(function() {
                     $('#filter_results_container').hide();
                     $('#question_container').hide();
                     $('#results_container').show();
-                    $('#search_form_container').show();
+                    $('#search_form_container').hide();
+                    $('#dash_board').hide();
                     $('#search_results_container').show();
                     $(document).scrollTop(0);
                 }
@@ -670,7 +689,7 @@ $(document).ready(function() {
         });
 
     // advanced search
-    $('#advsearch_button').click(function() {
+    $('#advsearch_button').click(function () {
         var input = $('#search_text').val();
         $('#search_form_container').hide();
         $('#question_container').hide();
@@ -679,9 +698,10 @@ $(document).ready(function() {
         $('#filter_results_container').hide();
         $('#adv_search_container').show();
 
+
     });
 
-    $('#search_advs').click(function() {
+    $('#search_advs').click(function () {
         search("advanced");
         $('#adv_search_container').hide();
         $('#search_form_container').show();
@@ -690,17 +710,19 @@ $(document).ready(function() {
         $('#search_results_container').show();
         $('#filter_results_container').hide();
         $(document).scrollTop(0);
+        $('#dash_board').hide();
+
     });
 
     $('#search_text').keypress(
-        function(e) {
+        function (e) {
             if (e.keyCode == 13) {
                 return false
             }
         });
 
     // close advanced search form and return
-    $('#back_button').click(function() {
+    $('#back_button').click(function () {
         $('#adv_search_container').hide();
         $('#question_container').hide();
         $('#results_container').hide();
@@ -709,17 +731,33 @@ $(document).ready(function() {
         $('#search_form_container').show();
     });
 
-    $("#close_question").click(function(){
-		$("#close_modal").modal('show');
-	});
-	$("#close_modal").modal({
-		closable: true
-	});
+    $("#close_question").click(function () {
+        $("#close_modal").modal('show');
+    });
+    $("#close_modal").modal({
+        closable: true
+    });
+    $("#show_trials").click(function () {
+        if ($(this).attr('show') == 'yes') {
+            $('#filter_results').show();
+            $(this).text('Hide Eligible Trials')
+            $(this).attr('show', 'no');
+        } else {
+            $('#filter_results').hide();
+            $(this).text('Show Eligible Trials')
+            $(this).attr('show', 'yes');
+        }
+
+    });
+    // $('#show_trials').click(function(){
+    //     $('#filter_results').show();
+    // });
 
     // close question container
     $('#confirm_close_question').bind('click',
+        // window.location.href = 'newPage.html';
 
-        function() {
+        function () {
             $('#question_tags').empty();
             $("#question_form").empty();
             $('#question_number').empty();
@@ -728,7 +766,6 @@ $(document).ready(function() {
             $("#qa_title").prop("checked", false);
             $("#qa_title_checkbox").hide();
             $("#answered_questions_container").hide();
-
 
 
             $('#question_container').hide();
@@ -747,7 +784,7 @@ $(document).ready(function() {
                     opacity: .5,
                 },
             });
-            $.getJSON($SCRIPT_ROOT + '/_clean', function(data) {
+            $.getJSON($SCRIPT_ROOT + '/_clean', function (data) {
                 $(document).scrollTop(0);
             });
         });

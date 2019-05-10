@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block index %}
-<div id='ctgov_detail' class="ui container">
+<div class="ui container" id='dash_board'>
     <h3>
         <a href="http://www.clinicaltrials.gov" target="_blank">ClinicalTrials.gov</a> currently lists <span
             id="ctgov_number">{{nnct}}</span> studies
@@ -11,27 +11,27 @@
 <div class="ui hidden divider"></div>
 <div class="ui hidden divider"></div>
 <div class="ui stackable very relaxed center aligned grid container">
-    <h2 class="ui header">DQueST: Dynamic Questionnaire for Search of Clinical Trials.
+    <h2 class="ui header">DQueST: Final Eligible Clinical Trials As Easy As Possible
     </h2>
     <div id='search_form_container' class='ui container'>
         <form class="ui form" id="search_form" name="">
             <div class="three fields">
                 <div class="field">
-                    <label>Conditions</label>
+                    <label>Conditions or Disease (for example: breast cancer)</label>
                     <div class="ui search">
                         <input class="prompt" name="term" id="first_focus"
-                            placeholder="Enter terms (e.g.'hepatocellular carcinoma') to search on ClinicalTrials.gov.">
+                            placeholder="Breast Cancer">
                     </div>
                 </div>
                 <div class="field">
                     <label>Recruitment Status</label>
                     <select class="ui fluid dropdown" id="recruit_status">
-                        <option value="Open" selected="selected">Open Studies</option>
-                        <option value="All">All studies</option>
+                        <option value="Open" selected="selected">Recruiting Studies</option>
+                        <option value="All">Recruiting and non-recruiting Studies</option>
                     </select>
                 </div>
                 <div class="field">
-                    <label>Location Terms</label>
+                    <label>Location</label>
                     <input class="input_field field_text" type="text" id="location_terms" value=""
                         placeholder="Los Angeles" />
                 </div>
