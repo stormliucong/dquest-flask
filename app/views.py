@@ -9,7 +9,7 @@ log = logger ('dquest-view')
 
 
 # home page
-@app.route('/index')
+@app.route('/')
 def index ():
     # get trial number
     nnct = ctgov.get_nct_number ('http://clinicaltrials.gov/search?term=&displayxml=True&count=0')
@@ -46,13 +46,34 @@ def ctgov_advanced_search():
 @app.route('/_start_question')
 def start_question():
     # get parameters
-    stxt = request.args.get('stxt')
+    stxt = request.args.get
+    ('stxt')
     # save the query in session
     session.clear()
     session['query'] = stxt
     session.modified = True
     # get trials and tags
     rnct = ctgov.get_initial_nct (stxt)
+    working_nct_id_list = qst.init_working_nct_id_list(rnct)
+    question_answer_list = []
+    question_answer_list = qst.find_new_question(question_answer_list,working_nct_id_list)
+    log.info ('%s -- first question' % (request.remote_addr))
+    return jsonify (question_answer_list = question_answer_list, working_nct_id_list = working_nct_id_list)
+
+# start question and init working_nct_id_list and question_answer_list.
+@app.route('/_start_question_detail')
+def start_question_detail():
+    # get parameters
+    cond = request.args.get('cond')
+    recrs = request.args.get('recrs')
+    locn = request.args.get('locn')
+
+    # save the query in session
+    session.clear()
+    session['query'] = cond
+    session.modified = True
+    # get trials and tags
+    rnct = ctgov.get_initial_nct_detail(recrs,cond,locn)
     working_nct_id_list = qst.init_working_nct_id_list(rnct)
     question_answer_list = []
     question_answer_list = qst.find_new_question(question_answer_list,working_nct_id_list)

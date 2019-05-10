@@ -15,6 +15,14 @@ def get_initial_nct (txt):
     url = 'http://clinicaltrials.gov/search?cond=%s&displayxml=true' % txt
     return get_initial_nct_from_url (url)
 
+def get_initial_nct_detail (recrs,cond,locn):
+    recrs = of.format_search_terms (recrs)
+    cond = of.format_search_terms (cond)
+    locn = of.format_search_terms (locn)
+    url = 'http://clinicaltrials.gov/search?cond=%s&recrs=%s&locn=%s&displayxml=true' % (cond,recrs,locn)
+    print(url)
+    return get_initial_nct_from_url (url)
+
 
 # global ctgov search from url
 @cache.memoize(604800)

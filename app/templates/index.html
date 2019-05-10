@@ -2,7 +2,8 @@
 {% block index %}
 <div id='ctgov_detail' class="ui container">
     <h3>
-        <a href="http://www.clinicaltrials.gov" target="_blank">ClinicalTrials.gov</a> currently lists <span id="ctgov_number">{{nnct}}</span> studies
+        <a href="http://www.clinicaltrials.gov" target="_blank">ClinicalTrials.gov</a> currently lists <span
+            id="ctgov_number">{{nnct}}</span> studies
     </h3>
 </div>
 <div class="ui hidden divider"></div>
@@ -14,11 +15,28 @@
     </h2>
     <div id='search_form_container' class='ui container'>
         <form class="ui form" id="search_form" name="">
-            <div class="field">
-                <div class="ui search">
-                    <input class="prompt" name="term" id="first_focus" placeholder="Enter terms (e.g.'hepatocellular carcinoma') to search on ClinicalTrials.gov.">
+            <div class="three fields">
+                <div class="field">
+                    <label>Conditions</label>
+                    <div class="ui search">
+                        <input class="prompt" name="term" id="first_focus"
+                            placeholder="Enter terms (e.g.'hepatocellular carcinoma') to search on ClinicalTrials.gov.">
+                    </div>
+                </div>
+                <div class="field">
+                    <label>Recruitment Status</label>
+                    <select class="ui fluid dropdown" id="recruit_status">
+                        <option value="Open" selected="selected">Open Studies</option>
+                        <option value="All">All studies</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label>Location Terms</label>
+                    <input class="input_field field_text" type="text" id="location_terms" value=""
+                        placeholder="Los Angeles" />
                 </div>
             </div>
+
             <div class="ui secondary submit button" id="search_button">Search</div>
             <div class="ui button" id="advsearch_button">Advanced Search<i class="right chevron icon"></i></div>
             <div class="ui error message"></div>

@@ -61,8 +61,16 @@ function search(tsearch) {
                 opacity: .5,
             },
         });
-        $.getJSON($SCRIPT_ROOT + '/_start_question', {
-            stxt: $('#first_focus').val()
+        var cond = $('#first_focus').val();
+        var recrs = $('#recruit_status').val();
+        var locn = $('#location_terms').val();
+        if(recrs == 'All'){
+            recrs = ''
+        }
+        $.getJSON($SCRIPT_ROOT + '/_start_question_detail', {
+            cond: cond,
+            recrs: recrs,
+            locn: locn
         }, function(data) {
             search_n = data.working_nct_id_list.length;
             tag_name = $('#first_focus').val();
@@ -161,16 +169,22 @@ function start_question(tsearch) {
                 opacity: .5,
             },
         });
-        $.getJSON($SCRIPT_ROOT + '/_start_question', {
-            stxt: $('#first_focus').val()
-        }, function(data) {
+        var cond = $('#first_focus').val();
+        var recrs = $('#recruit_status').val();
+        var locn = $('#location_terms').val();
+        if(recrs == 'All'){
+            recrs = ''
+        }
+        $.getJSON($SCRIPT_ROOT + '/_start_question_detail', {
+            cond: cond,
+            recrs: recrs,
+            locn: locn
+        },  function(data) {
             search_n = data.working_nct_id_list.length;
             $('#filter_n').html(search_n);
             nres = parseInt(search_n);
             find_results(data.working_nct_id_list, 1);
             q_visualization(data.question_answer_list, data.working_nct_id_list);
-
-
         });
     }
 }
@@ -185,27 +199,35 @@ function q_visualization(question_answer_list, working_nct_id_list) {
     $("#include option[value='NULL']").attr("selected", "selected");
     qa = question_answer_list[question_answer_list.length - 1]
     q = qa.question
-    sout = 'Answer Question [' + question_answer_list.length.toString() + '] '
+    sout = 'Answer Question' ;
+    sout += '<div class="ui horizontal label">';
+    sout += question_answer_list.length.toString();
+    sout += '</div>'
     $('#question_number').html(sout)
     if (q.entity_text != 'QNF') {
         if (q.domain.toLowerCase() == 'condition') {
-            sout = '(Condition) Have you ever been diagnosed with -- ' + q.entity_text + '?'
+            sout = '<div class="ui pink horizontal label">Condition</div>'
+            sout += 'Have you ever been diagnosed with -- ' + q.entity_text + '?'
             $('#question_title').html(sout)
         }
         if (q.domain.toLowerCase() == 'drug') {
-            sout = '(Drug) Have you ever taken or received -- ' + q.entity_text + '?'
+            sout = '<div class="ui purple horizontal label">Drug</div>'
+            sout += 'Have you ever taken or received -- ' + q.entity_text + '?'
             $('#question_title').html(sout)
         }
         if (q.domain.toLowerCase() == 'procedure') {
-            sout = '(Procedure) Have you ever undergone a(n) -- ' + q.entity_text + '?'
+            sout = '<div class="ui brown horizontal label">Procedure</div>'
+            sout += 'Have you ever undergone a(n) -- ' + q.entity_text + '?'
             $('#question_title').html(sout)
         }
         if (q.domain.toLowerCase() == 'measurement') {
-            sout = '(Measurement) Do you know your most recent -- ' + q.entity_text + '?'
+            sout = '<div class="ui blue horizontal label">Measurement</div>'
+            sout += 'Do you know your most recent -- ' + q.entity_text + '?'
             $('#question_title').html(sout)
         }
         if (q.domain.toLowerCase() == 'observation') {
-            sout = '(Observation) Do you currently have or have you ever had/been -- ' + q.entity_text + '?'
+            sout = '<div class="ui olive horizontal label">Observation</div>'
+            sout += 'Do you currently have or have you ever had/been -- ' + q.entity_text + '?'
             $('#question_title').html(sout)
         }
     } else {
@@ -218,9 +240,12 @@ function q_visualization(question_answer_list, working_nct_id_list) {
     // add tag.
     for (var i = 1; i <= question_answer_list.length; i++) {
         var sout = new String();
-        sout += '<div class="ui tag label button" id="qtag_' + i + '">';
-        sout += '[' + i + '] ' + question_answer_list[i - 1].question.entity_text;
+        sout += '<a class="item" id="qtag_' + i + '">'
+        sout += '<div class="ui horizontal label" >';
+        sout += i
         sout += '</div>'
+        sout += question_answer_list[i - 1].question.entity_text;
+        sout += '</a'>
         $('#question_tags').append(sout);
         $("#qtag_" + i).unbind('click');
         $("#qtag_" + i).bind('click', { 'idx': i, 'q': question_answer_list, 'w': working_nct_id_list }, function(e) {
@@ -252,10 +277,8 @@ function q_visualization(question_answer_list, working_nct_id_list) {
             a = qa['answer'];
             a['include'] = $("#include").val();
             if ($('#include').val() == 'INC') {
-                var title = $('#question_title').text();
-                var patt = /^\(Measurement\).*/g;
-                var result = patt.test(title);
-                if(result == false){
+                var title = $('#question_title').children('div').text();
+                if(title != 'Measurement'){
                     var today = new Date();
                     var dd = today.getDate();
                     var mm = today.getMonth() + 1; //January is 0!
@@ -586,10 +609,8 @@ $(document).ready(function() {
     semantiUIInit();
 
     $("#include").change(function() {
-        var title = $('#question_title').text();
-        var patt = /^\(Measurement\).*/g;
-        var result = patt.test(title);
-        if(result == true){
+        var title = $('#question_title').children('div').text()
+        if(title == 'Measurement'){
             // This is a measurement
             $('#time_container').hide();
             if ($('#include').val() == 'INC') {
