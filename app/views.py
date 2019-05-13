@@ -61,11 +61,10 @@ def start_question():
     return jsonify (question_answer_list = question_answer_list, working_nct_id_list = working_nct_id_list)
 
 # start question and init working_nct_id_list and question_answer_list.
-@app.route('/_start_question_detail')
+@app.route('/_pts_start_question')
 def start_question_detail():
     # get parameters
     cond = request.args.get('cond')
-    recrs = request.args.get('recrs')
     locn = request.args.get('locn')
 
     # save the query in session
@@ -73,7 +72,7 @@ def start_question_detail():
     session['query'] = cond
     session.modified = True
     # get trials and tags
-    rnct = ctgov.get_initial_nct_detail(recrs,cond,locn)
+    rnct = ctgov.get_initial_nct_patient(cond,locn)
     working_nct_id_list = qst.init_working_nct_id_list(rnct)
     question_answer_list = []
     question_answer_list = qst.find_new_question(question_answer_list,working_nct_id_list)

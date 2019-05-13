@@ -23,6 +23,14 @@ def get_initial_nct_detail (recrs,cond,locn):
     print(url)
     return get_initial_nct_from_url (url)
 
+def get_initial_nct_patient (cond,locn):
+    cond = of.format_search_terms (cond)
+    locn = of.format_search_terms (locn)
+    url = 'http://clinicaltrials.gov/search?cond=%s&recrs=recrs&type=intr&locn=%s&displayxml=true' % (cond,locn)
+    print(url)
+    return get_initial_nct_from_url (url)
+
+
 
 # global ctgov search from url
 @cache.memoize(604800)

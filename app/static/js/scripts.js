@@ -68,9 +68,8 @@ function search(tsearch) {
         if (recrs == 'All') {
             recrs = ''
         }
-        $.getJSON($SCRIPT_ROOT + '/_start_question_detail', {
+        $.getJSON($SCRIPT_ROOT + '/_pts_start_question', {
             cond: cond,
-            recrs: recrs,
             locn: locn
         }, function (data) {
             search_n = data.working_nct_id_list.length;
@@ -176,9 +175,8 @@ function start_question(tsearch) {
         if (recrs == 'All') {
             recrs = ''
         }
-        $.getJSON($SCRIPT_ROOT + '/_start_question_detail', {
+        $.getJSON($SCRIPT_ROOT + '/_pts_start_question', {
             cond: cond,
-            recrs: recrs,
             locn: locn
         }, function (data) {
             search_n = data.working_nct_id_list.length;

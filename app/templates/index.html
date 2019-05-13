@@ -15,26 +15,16 @@
     </h2>
     <div id='search_form_container' class='ui container'>
         <form class="ui form" id="search_form" name="">
-            <div class="three fields">
-                <div class="field">
-                    <label>Conditions or Disease (for example: breast cancer)</label>
-                    <div class="ui search">
-                        <input class="prompt" name="term" id="first_focus"
-                            placeholder="Breast Cancer">
-                    </div>
+            <div class="field">
+                <label>Conditions or Disease (for example: breast cancer)</label>
+                <div class="ui search">
+                    <input class="prompt" name="term" id="first_focus" placeholder="Breast Cancer">
                 </div>
-                <div class="field">
-                    <label>Recruitment Status</label>
-                    <select class="ui fluid dropdown" id="recruit_status">
-                        <option value="Open" selected="selected">Recruiting Studies</option>
-                        <option value="All">Recruiting and non-recruiting Studies</option>
-                    </select>
-                </div>
-                <div class="field">
-                    <label>Location</label>
-                    <input class="input_field field_text" type="text" id="location_terms" value=""
-                        placeholder="Los Angeles" />
-                </div>
+            </div>
+            <div class="field">
+                <label>Location</label>
+                <input class="input_field field_text" type="text" id="location_terms" value=""
+                    placeholder="Los Angeles" />
             </div>
 
             <div class="ui secondary submit button" id="search_button">Search</div>
