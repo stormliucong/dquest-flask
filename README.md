@@ -38,7 +38,7 @@ CRITERIA_HOST = 'elixr.XXX'
 CRITERIA_DATABASE = 'trial_knowledge_base'
 CRITEIRA_USERNAME = 'XXX'
 CRITERIA_PASSWORD = 'XXX'
-CRITERIA_DRIVER = '{ODBC Driver 17 for SQL Server}'
+CRITERIA_DRIVER = '{ODBC Driver 17 for SQL Server}' # make sure the driver is installed on the server
 CRITERIA_PORT  = XXX
 
 AACT_HOST = 'aact-db.ctti-clinicaltrials.org'
@@ -97,3 +97,19 @@ import lib.question_info_entropy as qst
 import lib.question as qst
 import lib.question_cluster as qst
 ```
+
+change log file path
+```
+# app/lib/log.py
+hfile_info = logging.FileHandler("app/log/dquest-info.log")
+hfile_error = logging.FileHandler("app/log/dquest-error.log")
+```
+
+check path
+```
+# app/view.py
+@app.route('/')
+def index ():
+```
+
+

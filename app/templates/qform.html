@@ -3,7 +3,7 @@
 
         <div class="ui segment ten wide column">
             <div class="ui top attached label">question panel</div>
-            <div class="field">
+            <div class="field" id='question_field'>
                 <h3 class="ui header" style="display:none">
                     <label id="question_number"></label>
                 </h3>
@@ -70,9 +70,9 @@
 
         </div>
 
-        <div class="ui segment six wide column">
+        <div class="ui segment six wide column" style="overflow:auto;height: 350px;">
             <div class="ui top attached label">navigation panel</div>
-            <div class="ui container" id="go_back_container" style="overflow:auto;height: 350px;">
+            <div class="ui container" id="go_back_container" >
                 <div class="field">
                     <div class="ui container">
                         <h4> Go back to question: </h4>

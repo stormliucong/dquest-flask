@@ -286,52 +286,52 @@ function q_visualization(question_answer_list, working_nct_id_list) {
         $('#domain').dropdown('set selected', domain);
     });
     // add tag.
-    for (var i = 1; i <= question_answer_list.length; i++) {
-        var sout = new String();
-        sout += '<a class="item" id="qtag_' + i + '">'
-        domain = question_answer_list[i - 1].question.domain;
-        if (domain.toLowerCase() == 'condition') {
-            sout += '<div class="ui pink horizontal label">C</div>';
-        }
-        if (domain.toLowerCase() == 'drug') {
-            sout += '<div class="ui purple horizontal label">D</div>';
-        }
-        if (domain.toLowerCase() == 'procedure') {
-            sout += '<div class="ui brown horizontal label">P</div>';
-        }
-        if (domain.toLowerCase() == 'measurement') {
-            sout += '<div class="ui blue horizontal label">M</div>';
-
-        }
-        if (domain.toLowerCase() == 'observation') {
-            sout += '<div class="ui olive horizontal label">O</div>';
-        }
-
-        sout += '</div>'
-        sout += question_answer_list[i - 1].question.entity_text;
-        sout += '</a' >
-            $('#question_tags').append(sout);
-        $("#qtag_" + i).unbind('click');
-        $("#qtag_" + i).bind('click', { 'idx': i, 'q': question_answer_list, 'w': working_nct_id_list }, function (e) {
-            var local_i = e.data.idx;
-            var q = e.data.q;
-            var w = e.data.w;
-            if (local_i > 1) {
-                d = q[local_i - 1].question.domain;
-                q = q.slice(0, local_i - 1);
-            } else {
-                d = 'ALL';
-                q = [];
-            }
-            for (var j = 0; j < w.length; j++) {
-                if (w[j][2] >= local_i) {
-                    // change status.
-                    w[j][2] = 0
-                }
-            }
-            confirm(q, w, d);
-        });
+for (var i = 1; i <= question_answer_list.length; i++) {
+    var sout = new String();
+    sout += '<a class="item" id="qtag_' + i + '">'
+    domain = question_answer_list[i - 1].question.domain;
+    if (domain.toLowerCase() == 'condition') {
+        sout += '<div class="ui pink horizontal label">C</div>';
     }
+    if (domain.toLowerCase() == 'drug') {
+        sout += '<div class="ui purple horizontal label">D</div>';
+    }
+    if (domain.toLowerCase() == 'procedure') {
+        sout += '<div class="ui brown horizontal label">P</div>';
+    }
+    if (domain.toLowerCase() == 'measurement') {
+        sout += '<div class="ui blue horizontal label">M</div>';
+
+    }
+    if (domain.toLowerCase() == 'observation') {
+        sout += '<div class="ui olive horizontal label">O</div>';
+    }
+
+    sout += '</div>'
+    sout += question_answer_list[i - 1].question.entity_text;
+    sout += '</a' >
+        $('#question_tags').append(sout);
+    $("#qtag_" + i).unbind('click');
+    $("#qtag_" + i).bind('click', { 'idx': i, 'q': question_answer_list, 'w': working_nct_id_list }, function (e) {
+        var local_i = e.data.idx;
+        var q = e.data.q;
+        var w = e.data.w;
+        if (local_i > 1) {
+            d = q[local_i - 1].question.domain;
+            q = q.slice(0, local_i - 1);
+        } else {
+            d = 'ALL';
+            q = [];
+        }
+        for (var j = 0; j < w.length; j++) {
+            if (w[j][2] >= local_i) {
+                // change status.
+                w[j][2] = 0
+            }
+        }
+        confirm(q, w, d);
+    });
+}
 }
 
 
@@ -738,12 +738,6 @@ $(document).ready(function () {
     $("#close_question").click(function () {
         $("#close_modal").modal('show');
     });
-    $('#logo').click(function () {
-        $("#close_modal").modal('show');
-    });
-    $('#home_icon').click(function () {
-        $("#close_modal").modal('show');
-    });
     $("#close_modal").modal({
         closable: true
     });
@@ -766,7 +760,9 @@ $(document).ready(function () {
     // close question container
     $('#confirm_close_question').bind('click',
         // window.location.href = 'newPage.html';
-        
+        function () {
+            window.location.href = '/';
+        });
 
     // function () {
     //     $('#question_tags').empty();

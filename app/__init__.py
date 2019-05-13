@@ -6,7 +6,7 @@ import psycopg2
 
 app = Flask(__name__)
 
-cache.init_app (app)
+# cache.init_app (app)
 
 app.config.from_object ('app.lib.config')
 
