@@ -1,12 +1,17 @@
 <div id="search_results_container" class='ui container' style='display: none'>
     <h2 id="search_results_summary" class='ui dividing header'>
-        <div class="ui ignored warning message">Found <code id='search_n'></code> related trials for <a id='tag_name'
-                class="ui teal tag label"></a></div>
+        <div class="ui ignored warning message">Found <code id='search_n'></code> related trials
+            for <a id='tag_name' class="ui teal tag label"></a></div>
+        <div class="ui ignored negative message" id='qfilt_warning_1' style='display: none'>Eligibility Criteria Question
+            NOT
+            Available (resulting trials must be less than 25,000). Please use advanced search to restrict the number of trials</div>
+        <div class="ui ignored negative message" id='qfilt_warning_2' style='display: none'>No results found. Please click
+            Home to restart search</div>
     </h2>
-    <div class="ui primary ignored button center massive fluid" id="qfilt" style='display: none'><i class="icon user"></i> Find Your Perfect
+    <div class="ui primary ignored button center massive fluid" id="qfilt" style='display: none'><i
+            class="icon user"></i> Find Your Perfect
         Clinical Trial </div>
-    <div class="ui ignored warning message" id='qfilt_warning' style='display: none'>Eligibility Criteria Question NOT
-        Available (resulting trials must be less than 25,000)</div>
+
     <div class="ui container" id='search_results' style='display: none'>
         <div class="ui relaxed divided list"></div>
         <div class="ui right menu secondary stackable container">
@@ -18,9 +23,15 @@
 </div>
 <div id="filter_results_container" class='ui container' style='display: none'>
     <h2 id="filter_results_summary" class='ui dividing header'>
-        <div class="ui ignored warning message fluid">You are still eligible for <code id='filter_n'></code>  trials</div>
+        <div class="ui ignored warning message fluid">You are still eligible for <code id='filter_n'></code> trials
+        </div>
+        <div class="ui ignored negative negative fluid" style="display:none" id='qfilt_warning_3'>You are not eligible for any trials. Try navigation to go back to previous found trials.
+        </div>
+        <div class="ui ignored negative negative fluid" style="display:none" id='qfilt_warning_4'>No more eligibility questions. Please review the results.
+            </div>
     </h2>
-    <div class="ui primary ignored button center massive fluid toggle blue" id="show_trials" show='yes'><i class="icon user"></i> Show Eligible Trials </div>
+    <div class="ui primary ignored button center massive fluid toggle blue" id="show_trials" show='yes'><i
+            class="icon user"></i> Show Eligible Trials </div>
     <div class="ui container" id='filter_results' style='display: none'>
         <div class="ui relaxed divided list"></div>
         <div class="ui right menu secondary stackable container">

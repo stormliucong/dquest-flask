@@ -25,32 +25,34 @@ function search(tsearch) {
                 $('#search_n').html(search_n);
                 $('#tag_name').html(tag_name);
                 nres = parseInt(search_n);
-                if (nres > 0) {
-                    if (nres > 1 && nres <= 25000) {
-                        $("#qfilt").show();
-                        $("#qfilt_warning").hide();
-                        $('#qfilt').unbind('click');
-                        $('#qfilt').bind('click', function () {
-                            start_question(tsearch);
-                            $('#search_form_container').hide();
-                            $('#question_container').show();
-                            $('#results_container').show();
-                            $('#search_results_container').hide();
-                            $('#filter_results_container').show();
-                            $('#filter_results').hide();
-                            $("#qfilt").hide();
-                            $("#qfilt_warning").hide();
-                        });
-                    } else {
-                        if (nres > 25000) {
-                            $("#qfilt").hide();
-                            $("#qfilt_warning").show();
-                            $('#qfilt').unbind('click');
-
-                        }
-                    }
+                if (nres >= 1 && nres <= 25000) {
+                    $("#qfilt").show();
+                    $('#qfilt').unbind('click');
+                    $('#qfilt').bind('click', function () {
+                        start_question(tsearch);
+                        $('#search_form_container').hide();
+                        $('#question_container').show();
+                        $('#results_container').show();
+                        $('#search_results_container').hide();
+                        $('#filter_results_container').show();
+                        $('#filter_results').hide();
+                        $("#qfilt").hide();
+                    });
                     find_search_results(data.working_nct_id_list, 1);
+                } else {
+                    if (nres > 25000) {
+                        $("#qfilt").hide();
+                        $("#qfilt_warning_1").show();
+                        $('#qfilt').unbind('click');
+
+                    }
+                    else {
+                        $("#qfilt").hide();
+                        $("#qfilt_warning_2").show();
+                        $('#qfilt').unbind('click');
+                    }
                 }
+
             });
     } else {
         $.blockUI({
@@ -77,31 +79,36 @@ function search(tsearch) {
             $('#search_n').html(search_n);
             $('#tag_name').html(tag_name);
             nres = parseInt(search_n);
-            if (nres > 0) {
-                if (nres > 1 && nres <= 25000) {
-                    $("#qfilt").show();
-                    $("#qfilt_warning").hide();
-                    $('#qfilt').unbind('click');
-                    $('#qfilt').bind('click', function () {
-                        start_question(tsearch);
-                        $('#search_form_container').hide();
-                        $('#question_container').show();
-                        $('#results_container').show();
-                        $('#search_results_container').hide();
-                        $('#filter_results_container').show();
-                        $("#qfilt").hide();
-                        $("#qfilt_warning").hide();
+            if (nres >= 1 && nres <= 25000) {
+                $("#qfilt").show();
+                $("#qfilt_warning").hide();
+                $('#qfilt').unbind('click');
+                $('#qfilt').bind('click', function () {
+                    start_question(tsearch);
+                    $('#search_form_container').hide();
+                    $('#question_container').show();
+                    $('#results_container').show();
+                    $('#search_results_container').hide();
+                    $('#filter_results_container').show();
+                    $("#qfilt").hide();
 
-                    });
-                } else {
-                    if (nres > 25000) {
-                        $("#qfilt").hide();
-                        $("#qfilt_warning").show();
-                        $('#qfilt').unbind('click');
-                    }
-                }
+                });
                 find_search_results(data.working_nct_id_list, 1);
+
+            } else {
+                if (nres > 25000) {
+                    $("#qfilt").hide();
+                    $("#qfilt_warning_1").show();
+                    $('#qfilt').unbind('click');
+
+                }
+                else {
+                    $("#qfilt").hide();
+                    $("#qfilt_warning_2").show();
+                    $('#qfilt').unbind('click');
+                }
             }
+
         });
     }
 }
@@ -203,39 +210,81 @@ function q_visualization(question_answer_list, working_nct_id_list) {
     sout += question_answer_list.length.toString();
     sout += '</div>'
     $('#question_number').html(sout)
-    if (q.entity_text != 'QNF') {
+    if (q.entity_text != 'NQF') {
         if (q.domain.toLowerCase() == 'condition') {
             x = '<div class="ui pink horizontal label">C</div>'
-            sout = 'Have you ever been diagnosed with -- ' + q.entity_text +  '?'
+            sout = 'Have you ever been diagnosed with -- ' + q.entity_text + x + '?';
             $('#question_title').html(sout)
         }
         if (q.domain.toLowerCase() == 'drug') {
             x = '<div class="ui purple horizontal label">D</div>'
-            sout = 'Have you ever taken or received -- ' + q.entity_text +   '?'
+            sout = 'Have you ever taken or received -- ' + q.entity_text + x + '?';
             $('#question_title').html(sout)
         }
         if (q.domain.toLowerCase() == 'procedure') {
             x = '<div class="ui brown horizontal label">P</div>'
-            sout = 'Have you ever undergone a(n) -- ' + q.entity_text +   '?'
+            sout = 'Have you ever undergone a(n) -- ' + q.entity_text + x + '?';
             $('#question_title').html(sout)
         }
         if (q.domain.toLowerCase() == 'measurement') {
             x = '<div class="ui blue horizontal label">M</div>'
-            sout = 'Do you know your most recent -- ' + q.entity_text + x +  '?'
+            sout = 'Do you know your most recent -- ' + q.entity_text + x + '?';
             $('#question_title').html(sout)
         }
         if (q.domain.toLowerCase() == 'observation') {
             x = '<div class="ui olive horizontal label">O</div>'
-            sout = 'Do you currently have or have you ever had/been -- ' + q.entity_text + '?'
+            sout = 'Do you currently have or have you ever had/been -- ' + q.entity_text + x + '?';
             $('#question_title').html(sout)
         }
     } else {
-        sout = q.entity_text;
-        $('#question_title').html(sout)
+        // no more questions.
+        $('#question_title').html('No More Questions' + q.domain.toLowerCase() + '. Please change to another domain or review results');
     }
 
+    // add confirm.
+    $('#confirmbutton').unbind('click');
+    $('#confirmbutton').bind('click', function () {
+        if ($("#include").val() != 'NULL') {
+            qa['answer'] = {};
+            a = qa['answer'];
+            a['include'] = $("#include").val();
+            if ($('#include').val() == 'INC') {
+                var title = $('#question_title').children('div').text();
+                if (title != 'M') {
+                    var today = new Date();
+                    var dd = today.getDate();
+                    var mm = today.getMonth() + 1; //January is 0!
+                    var yyyy = today.getFullYear();
+                    if (dd < 10) {
+                        dd = '0' + dd
+                    }
+                    if (mm < 10) {
+                        mm = '0' + mm
+                    }
+                    var today_time = mm + '/' + dd + '/' + yyyy;
+                    if ($("#rangestart").attr('time_string') !== '') {
+                        var rangestart = moment($("#rangestart").attr('time_string'), 'MM/DD/YYYY');
+                        a['rangestart'] = -rangestart.diff(today_time, 'days');
+                    }
 
+                    if ($("#rangeend").attr('time_string') !== '') {
 
+                        var rangeend = moment($("#rangeend").attr('time_string'), 'MM/DD/YYYY');
+                        a['rangeend'] = -rangeend.diff(today_time, 'days');
+                    }
+                } else {
+                    if ($("#measurement_value").val() != '') {
+                        a['measurement_value'] = $("#measurement_value").val();
+                    }
+                }
+            }
+
+        }
+        domain = $('#domain').val();
+        confirm(question_answer_list, working_nct_id_list, domain);
+        semantiUIInit();
+        $('#domain').dropdown('set selected', domain);
+    });
     // add tag.
     for (var i = 1; i <= question_answer_list.length; i++) {
         var sout = new String();
@@ -283,52 +332,9 @@ function q_visualization(question_answer_list, working_nct_id_list) {
             confirm(q, w, d);
         });
     }
-
-    // add confirm.
-    $('#confirmbutton').unbind('click');
-    $('#confirmbutton').bind('click', function () {
-        if ($("#include").val() != 'NULL') {
-            qa['answer'] = {};
-            a = qa['answer'];
-            a['include'] = $("#include").val();
-            if ($('#include').val() == 'INC') {
-                var title = $('#question_title').children('div').text();
-                if (title != 'Measurement') {
-                    var today = new Date();
-                    var dd = today.getDate();
-                    var mm = today.getMonth() + 1; //January is 0!
-                    var yyyy = today.getFullYear();
-                    if (dd < 10) {
-                        dd = '0' + dd
-                    }
-                    if (mm < 10) {
-                        mm = '0' + mm
-                    }
-                    var today_time = mm + '/' + dd + '/' + yyyy;
-                    if ($("#rangestart").attr('time_string') !== '') {
-                        var rangestart = moment($("#rangestart").attr('time_string'), 'MM/DD/YYYY');
-                        a['rangestart'] = -rangestart.diff(today_time, 'days');
-                    }
-
-                    if ($("#rangeend").attr('time_string') !== '') {
-
-                        var rangeend = moment($("#rangeend").attr('time_string'), 'MM/DD/YYYY');
-                        a['rangeend'] = -rangeend.diff(today_time, 'days');
-                    }
-                } else {
-                    if ($("#measurement_value").val() != '') {
-                        a['measurement_value'] = $("#measurement_value").val();
-                    }
-                }
-            }
-
-        }
-        domain = $('#domain').val();
-        confirm(question_answer_list, working_nct_id_list, domain);
-        semantiUIInit();
-        $('#domain').dropdown('set selected', domain);
-    });
 }
+
+
 
 // event binding to confirm button
 function confirm(question_answer_list, working_nct_id_list, domain) {
@@ -625,7 +631,7 @@ $(document).ready(function () {
 
     $("#include").change(function () {
         var title = $('#question_title').children('div').text()
-        if (title == 'Measurement') {
+        if (title == 'M') {
             // This is a measurement
             $('#time_container').hide();
             if ($('#include').val() == 'INC') {
@@ -732,6 +738,12 @@ $(document).ready(function () {
     $("#close_question").click(function () {
         $("#close_modal").modal('show');
     });
+    $('#logo').click(function () {
+        $("#close_modal").modal('show');
+    });
+    $('#home_icon').click(function () {
+        $("#close_modal").modal('show');
+    });
     $("#close_modal").modal({
         closable: true
     });
@@ -754,38 +766,39 @@ $(document).ready(function () {
     // close question container
     $('#confirm_close_question').bind('click',
         // window.location.href = 'newPage.html';
+        
 
-        function () {
-            $('#question_tags').empty();
-            $("#question_form").empty();
-            $('#question_number').empty();
-            $('#question_title').empty();
-            $("#answered_questions").empty();
-            $("#qa_title").prop("checked", false);
-            $("#qa_title_checkbox").hide();
-            $("#answered_questions_container").hide();
+    // function () {
+    //     $('#question_tags').empty();
+    //     $("#question_form").empty();
+    //     $('#question_number').empty();
+    //     $('#question_title').empty();
+    //     $("#answered_questions").empty();
+    //     $("#qa_title").prop("checked", false);
+    //     $("#qa_title_checkbox").hide();
+    //     $("#answered_questions_container").hide();
 
 
-            $('#question_container').hide();
-            $('#results_container').show();
-            $('#search_results_container').show();
-            $('#filter_results_container').hide();
-            $('#search_form_container').show();
-            semantiUIInit(); // refresh table.
+    //     $('#question_container').hide();
+    //     $('#results_container').show();
+    //     $('#search_results_container').show();
+    //     $('#filter_results_container').hide();
+    //     $('#search_form_container').show();
+    //     semantiUIInit(); // refresh table.
 
-            $.blockUI({
-                message: '<div class="ui segment"><div class="ui active dimmer">Loading...<div class="ui text loader"></div></div></div>',
-                css: {
-                    border: 'none',
-                    '-webkit-border-radius': '40px',
-                    '-moz-border-radius': '40px',
-                    opacity: .5,
-                },
-            });
-            $.getJSON($SCRIPT_ROOT + '/_clean', function (data) {
-                $(document).scrollTop(0);
-            });
-        });
+    //     $.blockUI({
+    //         message: '<div class="ui segment"><div class="ui active dimmer">Loading...<div class="ui text loader"></div></div></div>',
+    //         css: {
+    //             border: 'none',
+    //             '-webkit-border-radius': '40px',
+    //             '-moz-border-radius': '40px',
+    //             opacity: .5,
+    //         },
+    //     });
+    //     $.getJSON($SCRIPT_ROOT + '/_clean', function (data) {
+    //         $(document).scrollTop(0);
+    //     });
+    // });
 
 });
 $(document).ajaxStop($.unblockUI);

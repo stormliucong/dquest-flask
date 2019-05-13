@@ -75,10 +75,11 @@ def start_question_detail():
     rnct = ctgov.get_initial_nct_patient(cond,locn)
     working_nct_id_list = qst.init_working_nct_id_list(rnct)
     question_answer_list = []
-    question_answer_list = qst.find_new_question(question_answer_list,working_nct_id_list)
-    log.info ('%s -- first question' % (request.remote_addr))
-    return jsonify (question_answer_list = question_answer_list, working_nct_id_list = working_nct_id_list)
+    if len(working_nct_id_list) > 0:
+        question_answer_list = qst.find_new_question(question_answer_list,working_nct_id_list)
+        log.info ('%s -- first question' % (request.remote_addr))
 
+    return jsonify (question_answer_list = question_answer_list, working_nct_id_list = working_nct_id_list)
 # start question by adv seasrch and init working_nct_id_list and question_answer_list.
 @app.route('/_advs_start_question')
 def advs_start_question():
@@ -92,8 +93,9 @@ def advs_start_question():
     rnct = ctgov.get_initial_nct_from_url (url)
     working_nct_id_list = qst.init_working_nct_id_list(rnct)
     question_answer_list = []
-    question_answer_list = qst.find_new_question(question_answer_list,working_nct_id_list)
-    log.info ('%s -- first question' % (request.remote_addr))
+    if len(working_nct_id_list) > 0:
+        question_answer_list = qst.find_new_question(question_answer_list,working_nct_id_list)
+        log.info ('%s -- first question' % (request.remote_addr))
     return jsonify (question_answer_list = question_answer_list, working_nct_id_list = working_nct_id_list)
 
 # load nct details.
