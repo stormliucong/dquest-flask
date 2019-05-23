@@ -111,7 +111,17 @@ check path
 @app.route('/')
 def index ():
 ```
+## Versioning
+0.0.1
 
-### TBD
+## New features under development
 https://docs.google.com/document/d/1h4PVeiIdWwsHzuxIovAnBbqT4RD-xk59A3ZOaJHKng8/edit
+
+## Publications
+Uder revision
+## Authors
+Cong Liu, Chi Yuan, Alex Butler, Chunhua Weng
+stormliucong@gmail.com
+
+
 
